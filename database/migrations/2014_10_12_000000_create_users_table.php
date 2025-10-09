@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->tinyInteger('role')->default(3)->comment('1=Admin, 2=Leader, 3=User');
             $table->string('address')->nullable();
             $table->string('profile_image')->nullable();
+            $table->string('id_proof')->nullable()->comment('ID proof document');
             $table->boolean('status')->default(1)->comment('1=Active, 0=Inactive');
             $table->rememberToken();
             $table->timestamps();
