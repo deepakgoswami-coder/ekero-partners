@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAdminLeaderRequest;
 use App\Http\Requests\StoreLeaderRequest;
 use App\Models\Group;
 use App\Models\User;
@@ -33,7 +34,7 @@ class LeaderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreLeaderRequest $request)
+    public function store(StoreAdminLeaderRequest $request)
     {
         $user = new User();
         $user->fill($request->all());

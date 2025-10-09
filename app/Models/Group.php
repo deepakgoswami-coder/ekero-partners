@@ -9,17 +9,32 @@ class Group extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
-        'name',
+        'portal_set_id',
+        'name', 
+        'group_number',
         'leader_id',
-        'contribution_amount',
-        'frequency',
+        'target_amount',
+        'current_amount',
         'start_date',
-        'total_members',
-        'total_cycles',
-        'status'
+        'end_date',
+        'project_name',
+        'project_description',
+        'logo_path',
+        'video_path',
+        'invite_link',
+        'is_active'
     ];
-    public function leader(){
-        return $this->belongsTo(User::class,'leader_id');
+
+    // Your relationships here...
+    public function portalSet() {
+        return $this->belongsTo(PortalSet::class);
+    }
+
+    public function leader() {
+        return $this->belongsTo(User::class, 'leader_id');
+    }
+
+    public function members() {
+        return $this->hasMany(GroupMember::class);
     }
 }
