@@ -11,12 +11,12 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">User</h2>
+                            <h2 class="content-header-title float-start mb-0">member</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">user</a>
+                                    <li class="breadcrumb-item"><a href="#">member</a>
                                     </li>
                                     
                                 </ol>
@@ -39,10 +39,10 @@
                         <div class="col-md-12 col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">User</h4>
+                                    <h4 class="card-title">member</h4>
                                 </div>
                                 <div class="card-body">
-                                    <form class="form form-horizontal" action="{{ route('leader.update',$user->id) }}" enctype="multipart/form-data" method="post">
+                                    <form class="form form-horizontal" action="{{ route('member.update',$member->id) }}" enctype="multipart/form-data" method="post">
                                         @csrf
                                         @method('put')
                                         <div class="row">
@@ -54,7 +54,7 @@
                                                             class="text-danger">*</span></label>
                                                     <div class="col-md-12">
                                                         <input type="text" class="form-control" name="name"
-                                                            placeholder="Full Name" value="{{ $user->name}}">
+                                                            placeholder="Full Name" value="{{ $member->name}}">
                                                         @error('name') <small class="text-danger">{{ $message }}</small>
                                                         @enderror
                                                     </div>
@@ -68,7 +68,7 @@
                                                             class="text-danger">*</span></label>
                                                     <div class="col-md-12">
                                                         <input type="email" class="form-control" name="email"
-                                                            placeholder="john@gmail.com" value="{{ $user->email }}">
+                                                            placeholder="john@gmail.com" value="{{ $member->email }}">
                                                         @error('email') <small class="text-danger">{{ $message }}</small>
                                                         @enderror
                                                     </div>
@@ -82,7 +82,7 @@
                                                             class="text-danger">*</span></label>
                                                     <div class="col-md-12">
                                                         <input type="text" class="form-control" name="phone"
-                                                            placeholder="0909090909" value="{{ $user->phone }}">
+                                                            placeholder="0909090909" value="{{ $member->phone }}">
                                                         @error('phone') <small
                                                         class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
@@ -101,8 +101,8 @@
                                                         <input type="file" class="form-control" name="profile_image"
                                                             accept="image/*">
                                                         </div>
-                                                        @if ($user->profile_image)
-<img src="{{ asset('uploads/'.$user->profile_image) }}" style="width:100px"alt="">                                                        
+                                                        @if ($member->profile_image)
+<img src="{{ asset('uploads/'.$member->profile_image) }}" style="width:100px"alt="">                                                        
                                                         @endif
                                                         @error('profile_image') <small class="text-danger">{{ $message }}</small>
                                                         @enderror

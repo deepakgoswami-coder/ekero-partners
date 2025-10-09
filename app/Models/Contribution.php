@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class News extends Model
+class Contribution extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'redirect_url',
-        'thumbnail',
-        'title',
+    protected $fillable = [ 
+        'user_id',
+        'group_id',
+        'amount',
+        'date',
+        'status',
     ];
 }
