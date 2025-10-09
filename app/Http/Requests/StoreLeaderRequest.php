@@ -21,12 +21,54 @@ class StoreLeaderRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return [ 
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|min:10|max:15|unique:users,phone',
-            'password' => 'required|string|min:8|confirmed',
-            'profile_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            // 'phone' => 'required|string|max:10|unique:users,phone',
+            'address' => 'required|string|max:500',
+            'otp' => 'required|string|min:4|max:6',
+            'idproof'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+            'password' => 'required|string|min:6'
         ];
     }
+
+    public function messages(): array
+{
+    return [
+        'name.required' => 'Please enter your full name.',
+        'name.string' => 'Name must be a valid string.',
+        'name.max' => 'Name cannot exceed 255 characters.',
+
+        'email.required' => 'Email address is required.',
+        'email.string' => 'Email must be a valid string.',
+        'email.email' => 'Please enter a valid email address.',
+        'email.max' => 'Email cannot exceed 255 characters.',
+        'email.unique' => 'This email is already registered.',
+
+        // 'phone.required' => 'Mobile number is required.',
+        // 'phone.string' => 'Mobile number must be valid.',
+        // 'phone.max' => 'Mobile number cannot exceed 15 digits.',
+        // 'phone.unique' => 'This mobile number is already registered.',
+
+        'address.required' => 'Please enter your address.',
+        'address.string' => 'Address must be valid text.',
+        'address.max' => 'Address cannot exceed 500 characters.',
+
+        'otp.required' => 'OTP is required.',
+        'otp.string' => 'OTP must be a valid string.',
+        'otp.min' => 'OTP must be at least 4 digits.',
+        'otp.max' => 'OTP cannot be more than 6 digits.',
+
+        'idproof.required' => 'Please upload your ID proof.',
+        'idproof.file' => 'ID proof must be a file.',
+        'idproof.mimes' => 'ID proof must be a file of type: jpg, jpeg, png, or pdf.',
+        'idproof.max' => 'ID proof cannot be larger than 4MB.',
+
+        'password.required' => 'Password is required.',
+        'password.string' => 'Password must be a valid string.',
+        'password.min' => 'Password must be at least 8 characters long.',
+        'password.confirmed' => 'Password confirmation does not match.',
+    ];
+}
+
 }

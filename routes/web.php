@@ -23,6 +23,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Web\WebsiteController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Leader\AuthController as LeaderAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,4 +57,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::post('/leader/toggle-status', [LeaderController::class, 'toggleStatus'])->name('leader.toggle_user_status');
   Route::post('/leader/toggle-statuss', [MemberController::class, 'toggleStatus'])->name('member.toggle_user_status');
 });
+// All routes for the leader(role - 2) ---
 
+Route::prefix('leader')->group(function () {
+
+    Route::get('/register', [LeaderAuthController::class, 'register'])->name('leader.register');
+    Route::post('/register', [LeaderAuthController::class, 'registerStore'])->name('register.store');
+    Route::post('/send-otp', [LeaderAuthController::class, 'sendOtp'])->name('send.otp');
+    Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('verify.otp');
+
+
+
+});
