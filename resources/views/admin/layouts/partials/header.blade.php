@@ -74,6 +74,21 @@
             transition: opacity 0.5s ease-in-out;
             width: fit-content;
         }
+        .custom-danger-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #a73128ff;
+            /* Bootstrap success green */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+            width: fit-content;
+        }
     </style>
 </head>
 
@@ -82,6 +97,11 @@
     @if(Session::has('success'))
         <div id="success-alert" class="custom-success-alert">
             <img width="20px" src="{{ asset('admin/icons/success.gif') }}" alt=""> {{ Session::get('success') }}
+        </div>
+    @endif
+    @if(Session::has('error'))
+        <div id="success-alert" class="custom-danger-alert">
+             {{ Session::get('error') }}
         </div>
     @endif
     <!-- BEGIN: Header-->

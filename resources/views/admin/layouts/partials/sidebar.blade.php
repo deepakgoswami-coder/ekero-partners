@@ -33,13 +33,30 @@
                 <span>Modules <i data-feather="more-horizontal"></i></span>
             </li>
 
-            <li class="nav-item">
-                <a class="d-flex align-items-center {{ request()->routeIs('users.*') ? 'active' : '' }}"
-                   href="{{ route('users.index') }}">
-                    <i data-feather="user"></i>
-                    <span class="menu-title text-truncate">Users</span>
-                </a>
-            </li>
+           <li class="nav-item">
+    <a class="d-flex align-items-center {{ request()->routeIs('groups.*') ? 'active' : '' }}"
+       href="{{ route('groups.index') }}">
+        <i data-feather="layers"></i> {{-- Group icon --}}
+        <span class="menu-title text-truncate">Group</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="d-flex align-items-center {{ request()->routeIs('leader.*') ? 'active' : '' }}"
+       href="{{ route('leader.index') }}">
+        <i data-feather="user-check"></i> {{-- Leader icon --}}
+        <span class="menu-title text-truncate">Leader</span>
+    </a>
+</li>
+
+<li class="nav-item">
+    <a class="d-flex align-items-center {{ request()->routeIs('member.*') ? 'active' : '' }}"
+       href="{{ route('member.index') }}">
+        <i data-feather="users"></i> {{-- Member icon --}}
+        <span class="menu-title text-truncate">Member</span>
+    </a>
+</li>
+
               
            
 

@@ -11,12 +11,12 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">User</h2>
+                            <h2 class="content-header-title float-start mb-0">Group</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">user</a>
+                                    <li class="breadcrumb-item"><a href="#">Group</a>
                                     </li>
                                     
                                 </ol>
@@ -39,82 +39,77 @@
                         <div class="col-md-12 col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">User</h4>
+                                    <h4 class="card-title">Group</h4>
                                 </div>
                                 <div class="card-body">
-                                    <form class="form form-horizontal" action="{{ route('leader.update',$user->id) }}" enctype="multipart/form-data" method="post">
+                                    <form class="form form-horizontal" action="{{ route('groups.store') }}" method="post" enctype="multipart/form-data">
                                         @csrf
-                                        @method('put')
                                         <div class="row">
-
-                                            {{-- Name --}}
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Name <span
-                                                            class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Name <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="text" class="form-control" name="name"
-                                                            placeholder="Full Name" value="{{ $user->name}}">
-                                                        @error('name') <small class="text-danger">{{ $message }}</small>
-                                                        @enderror
+                                                        <input type="text" class="form-control" name="name" placeholder="Name" value="{{ old('name') }}">
+                                                        @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {{-- Email --}}
+                                             <div class="col-6">
+                                                <div class="mb-1 mt-1">
+                                                    <label class="form-label" for="basicSelect"> Leader</label>
+                                                    <select class="form-select" name="leader_id" id="basicSelect">
+                                                    <option value="">Select Leader</option>    
+                                                    @foreach ($leader as $val)
+                                                        <option value="{{ $val->id }}">{{ $val->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('leader_id')<div class="text text-danger">{{ $message }}</div> @enderror
+                                                </div>
+                                            </div>
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Email <span
-                                                            class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Contribution Amount <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="email" class="form-control" name="email"
-                                                            placeholder="john@gmail.com" value="{{ $user->email }}">
-                                                        @error('email') <small class="text-danger">{{ $message }}</small>
-                                                        @enderror
+                                                        <input type="number" class="form-control" name="contribution_amount" placeholder="Contribution Amount" value="{{ old('contribution_amount') }}">
+                                                        @error('contribution_amount') <small class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {{-- Phone Number --}}
+                                            <div class="col-6">
+                                                <div class="mb-1 mt-1">
+                                                    <label class="form-label" for="basicSelect"> Frequency</label>
+                                                    <select class="form-select" name="frequency" id="basicSelect">
+                                                         <option value="">Select Frequency</option>    
+                                                         <option value="1">Weekly</option>
+                                                        <option value="1">Monthly</option>
+                                                    </select>
+                                                    @error('frequency')<div class="text text-danger">{{ $message }}</div> @enderror
+                                                </div>
+                                            </div>
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Phone Number <span
-                                                            class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Total Cycles <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="text" class="form-control" name="phone"
-                                                            placeholder="0909090909" value="{{ $user->phone }}">
-                                                        @error('phone') <small
-                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                        <input type="number" class="form-control" name="total_cycles" placeholder="Total Cycles" value="{{ old('total_cycles') }}">
+                                                        @error('total_cycles') <small class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
                                                 </div>
                                             </div>
-
                                            
-
-                                           
-
-                                            {{-- Profile Image --}}
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Profile Image</label>
+                                                    <label class="col-form-label">Start date <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="file" class="form-control" name="profile_image"
-                                                            accept="image/*">
-                                                        </div>
-                                                        @if ($user->profile_image)
-<img src="{{ asset('uploads/'.$user->profile_image) }}" style="width:100px"alt="">                                                        
-                                                        @endif
-                                                        @error('profile_image') <small class="text-danger">{{ $message }}</small>
-                                                        @enderror
+                                                        <input type="date" class="form-control" name="start_date" placeholder="Total Cycles" value="{{ old('start_date') }}">
+                                                        @error('start_date') <small class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
                                                 </div>
                                             </div>
-
-                                        
-                                            {{-- Submit --}}
-                                            <div class="col-md-12 mt-2">
+                                            
+                                            
+                                            <div class="col-md-12 ">
                                                 <button type="submit" class="btn btn-primary me-1">Submit</button>
                                             </div>
-
                                         </div>
                                     </form>
                                 </div>
