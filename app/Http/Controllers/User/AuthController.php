@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Leader;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreLeaderRequest;
-use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -14,37 +14,20 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+
     public function register(){
-        return view("leader.register");
+        return view("user.register");
     }
 
-    public function registerStore(StoreLeaderRequest $request){
-         if ($request->hasFile('idproof')) {
-            $file = $request->file('idproof');
-            $destinationPath = public_path('uploads/idproofs');
-
-            if (!File::exists($destinationPath) || !is_dir($destinationPath)) {
-                File::makeDirectory($destinationPath, 0775, true);
-            }
-
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move($destinationPath, $fileName);
-
-            // store file path in DB
-            $request['idproof'] = 'uploads/idproofs/' . $fileName;
-        }
-
+    public function registerStore(StoreUserRequest $request){
+       
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email; 
         $user->password = Hash::make($request->password);
-        $user->address = $request->address;
-        $user->id_proof = $request->idproof;
-        $user->role = 2; // leader role
+        $user->role = 3; // User role
         $user->save();
 
-
-        // ✅ Step 5: Return response
         return "hello";    
     }
     public function sendOtp(Request $request)
@@ -111,3 +94,4 @@ class AuthController extends Controller
 }
 
 }
+

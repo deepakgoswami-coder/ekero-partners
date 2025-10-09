@@ -24,16 +24,34 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            'phone_number' => 'required|string|max:15|unique:users,phone_number',
             'password' => 'required|string|min:8|confirmed',
-            'gender' => 'required|in:male,female,other',
-            'merital_status' => 'required|in:single,married,divorced,widowed',
-            'profile' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'dob' => 'required|date|before:today',
-            'language' => 'required|string|max:50',
-            'bio' => 'required|string|min:3|max:1000',
-            'wallet' => 'nullable|numeric|min:0',
-        ];
+            'otp' => 'required|string|min:4|max:6',
 
+        ];
     }
+
+    public function messages(): array
+{
+    return [
+        'name.required' => 'Please enter your full name.',
+        'name.string' => 'Name must be a valid string.',
+        'name.max' => 'Name cannot exceed 255 characters.',
+
+        'email.required' => 'Email address is required.',
+        'email.string' => 'Email must be a valid string.',
+        'email.email' => 'Please enter a valid email address.',
+        'email.max' => 'Email cannot exceed 255 characters.',
+        'email.unique' => 'This email is already registered.',
+
+        'otp.required' => 'OTP is required.',
+        'otp.string' => 'OTP must be a valid string.',
+        'otp.min' => 'OTP must be at least 4 digits.',
+        'otp.max' => 'OTP cannot be more than 6 digits.',
+
+        'password.required' => 'Password is required.',
+        'password.string' => 'Password must be a valid string.',
+        'password.min' => 'Password must be at least 8 characters long.',
+        'password.confirmed' => 'Password confirmation does not match.',
+    ];
+}
 }
