@@ -16,9 +16,7 @@ class AuthController extends Controller
     }
 
     public function registerStore(StoreLeaderRequest $request){
-        // $data = $request->validated();
-
-        dd("jsdfhkjsdk" , $request->all());
+        
 
     }
     public function sendOtp(Request $request)

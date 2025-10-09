@@ -45,10 +45,10 @@ class StoreLeaderRequest extends FormRequest
         'email.max' => 'Email cannot exceed 255 characters.',
         'email.unique' => 'This email is already registered.',
 
-        'phone.required' => 'Mobile number is required.',
-        'phone.string' => 'Mobile number must be valid.',
-        'phone.max' => 'Mobile number cannot exceed 15 digits.',
-        'phone.unique' => 'This mobile number is already registered.',
+        // 'phone.required' => 'Mobile number is required.',
+        // 'phone.string' => 'Mobile number must be valid.',
+        // 'phone.max' => 'Mobile number cannot exceed 15 digits.',
+        // 'phone.unique' => 'This mobile number is already registered.',
 
         'address.required' => 'Please enter your address.',
         'address.string' => 'Address must be valid text.',
