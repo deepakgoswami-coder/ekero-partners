@@ -7,18 +7,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class WebMiddleware
+class LeaderMiddleware
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-   public function handle(Request $request, Closure $next)
+   public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role == 3) {
+        if (!Auth::check() || Auth::user()->role != 2) {
             Auth::logout();
-            return redirect('/user/dashboard') ->withErrors(['login_required' => 'Please login first to continue.']);
+            return redirect('/leader/dashboard') ->withErrors(['login_required' => 'Please login first to continue.']);
         }
         return $next($request);
     }

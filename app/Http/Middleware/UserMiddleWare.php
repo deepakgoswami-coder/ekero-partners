@@ -16,7 +16,7 @@ class UserMiddleWare
      */
     public function handle(Request $request, Closure $next): Response
     {
-         if (!Auth::check() || !Auth::user()->role == 3) {
+        if (!Auth::check() || Auth::user()->role != 3) {
             Auth::logout();
             return redirect('/user/login')->withErrors(['msg' => 'Access denied.']);
         }

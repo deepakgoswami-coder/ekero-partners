@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Leader\AuthController as LeaderAuthController;
+use App\Http\Controllers\Leader\DashBoardController as LeaderDashBoardController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\DashBoardController as UserDhashBoardController;
 
@@ -45,29 +46,35 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
 // All routes for the leader(role - 2) ---
 Route::prefix('leader')->group(function () {
-
+  // register and login Routes for leader
     Route::get('/register', [LeaderAuthController::class, 'register'])->name('leader.register');
     Route::post('/register', [LeaderAuthController::class, 'registerStore'])->name('register.store');
     Route::post('/send-otp', [LeaderAuthController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('verify.otp');
+    Route::get('/login', [LeaderAuthController::class, 'login'])->name('leader.login');
+    Route::post('/login', [LeaderAuthController::class, 'loginStore'])->name('leader.login.store');
 
-
-
+    // middle ware applied routes for the leader
+    Route::middleware('leader')->group(function () {
+      Route::get('/dashboard', action: [LeaderDashBoardController::class, 'dashboard'])->name('leader.dashboard'); 
+      
+    });
 });
+
 
 // All routes for the user(role - 3) ---
 Route::prefix('user')->group(function () {
-
-  // register and login Routes
+  // register and login Routes for user
     Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
     Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
     Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [UserAuthController::class, 'verifyOtp'])->name('verify.otp');
     Route::get('/login', [UserAuthController::class, 'login'])->name('user.login');
     Route::post('/login', [UserAuthController::class, 'loginStore'])->name('user.login.store');
+    
 
+    // middle ware applied routes for the user
     Route::middleware('user')->group(function () {
-
       Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
 
 
