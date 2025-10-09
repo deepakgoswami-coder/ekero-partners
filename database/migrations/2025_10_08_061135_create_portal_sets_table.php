@@ -10,12 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('group_members', function (Blueprint $table) {
+        Schema::create('portal_sets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('group_id')->constrained();
-            $table->foreignId('user_id')->constrained();
-            $table->decimal('weekly_commitment', 10, 2); // Amount user commits to pay weekly
-            $table->decimal('total_contributed', 10, 2)->default(0);
+            $table->string('name'); // e.g., '2025 Committee Set'
+            $table->integer('total_portals')->default(52);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -26,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('group_members');
+        Schema::dropIfExists('portal_sets');
     }
 };

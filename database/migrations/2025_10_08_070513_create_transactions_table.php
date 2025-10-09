@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('group_id');
-            $table->string('user_id');
-            $table->string('amount');
-            $table->string('type')->comment('cr,dt');
-            $table->string('date')->comment('recive date');
-            $table->timestamps();
+    $table->foreignId('group_id')->constrained();
+    $table->integer('payout_week');
+    $table->date('scheduled_date');
+    $table->decimal('payout_amount', 10, 2);
+    $table->boolean('is_paid')->default(false);
+    $table->date('paid_date')->nullable();
+    $table->timestamps();
         });
     }
 

@@ -4,7 +4,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\MemberController;
+use App\Http\Controllers\Admin\PortalController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\User\GroupController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Leader\AuthController as LeaderAuthController;
 use App\Http\Controllers\Leader\DashBoardController as LeaderDashBoardController;
@@ -33,6 +35,7 @@ Route::get('/admin', [AuthController::class, 'loginGet']);
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
   Route::get('/logout', [DashboardController::class, 'logout'])->name('logout');
+  Route::resource('portal',PortalController::class,);
   Route::resource('groups',AdminController::class,);
   Route::resource('leader',LeaderController::class,);
   Route::resource('member',MemberController::class,);
@@ -76,6 +79,8 @@ Route::prefix('user')->group(function () {
     // middle ware applied routes for the user
     Route::middleware('user')->group(function () {
       Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
+    Route::get('/group', [GroupController::class, 'group'])->name('user.group');
+    Route::get('/contribution', [GroupController::class, 'group'])->name('group.contribution');
 
 
     });

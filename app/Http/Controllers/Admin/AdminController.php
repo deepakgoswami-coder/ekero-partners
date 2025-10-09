@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreGroupRequest;
+use App\Models\Contribution;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\PortalSet;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Str;
 
 class AdminController extends Controller
 {
@@ -27,38 +30,58 @@ class AdminController extends Controller
     public function create()
     {
         $leader = User::where('role',2)->where('status',1)->latest()->get();
-        return view("admin.groups.create",compact('leader'));
+        $portalSets  = PortalSet::where('is_active',1)->latest()->get();
+        return view("admin.groups.create",compact('leader','portalSets'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGroupRequest $request)
-    {
-        try {
-            DB::beginTransaction();
-            $group = new Group();
-            $group->fill($request->all());
-            $group->total_members = $request->total_cycles;
-            $group->save();
-            for ($i=0; $i < $request->total_cycles ; $i++) { 
-                $groupMember = new GroupMember();
-                $groupMember->user_id = 0;
-                $groupMember->group_id = $group->id;
-                $groupMember->payout_order = rand(1,$request->total_cycle);
-                $groupMember->has_received = 'no';
-                $groupMember->status = 1;
-                $groupMember->save();
-                
-            }
-            DB::commit();
-            return redirect()->route('groups.index')->with('success','Add group successfully');
-            
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            throw $th;
+   public function store(StoreGroupRequest $request)
+{
+    try {
+        DB::beginTransaction();
+
+        $logoPath = null;
+        $videoPath = null;
+
+        if ($request->hasFile('logo')) {
+            $logoPath = $request->file('logo')->store('portal-logos', 'public');
         }
+
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->store('portal-videos', 'public');
+        }
+
+        // $inviteLink = Str::uuid()->toString();
+
+        $portal = new Group();
+        $portal->fill([
+            'portal_set_id' => $request->portal_set_id,
+            'name' => $request->name,
+            'group_number' => $request->group_number,
+            'leader_id' => $request->leader_id,
+            'target_amount' => $request->target_amount,
+            'current_amount' => 0, 
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'project_name' => $request->project_name,
+            'project_description' => $request->project_description,
+            'logo_path' => $logoPath,
+            'video_path' => $videoPath,
+            'is_active' => true
+        ]);
+        
+        $portal->save();
+
+        DB::commit();
+        return redirect()->route('groups.index')->with('success', 'Portal created successfully');
+
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        return redirect()->back()->with('error', 'Failed to create portal: ' . $th->getMessage());
     }
+}
 
     /**
      * Display the specified resource.
@@ -73,10 +96,9 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
-        $groups = Group::findOrFail($id);
-        $leader = User::where('role',2)->where('status',1)->latest()->get();
-
-        return view('admin.groups.edit', compact('groups','leader'));
+          $leader = User::where('role',2)->where('status',1)->latest()->get();
+        $portalSets  = PortalSet::where('is_active',1)->latest()->get();
+        return view('admin.groups.edit', compact('groups','leader','portalSets'));
     }
 
     /**
@@ -108,13 +130,28 @@ class AdminController extends Controller
 
     }
     public function assignMemberAdd(Request $request){
-        $groupMember = GroupMember::where('group_id',$request->group_id)->where('user_id',$request->user_id)->first();
-        if ($groupMember) {
-        return redirect()->back()->with('error','Member alredy assign in this group');
-            
+        try {
+            DB::beginTransaction();
+            $groupMember = GroupMember::where('group_id',$request->group_id)->where('user_id',$request->user_id)->first();
+            if ($groupMember) {
+            return redirect()->back()->with('error','Member alredy assign in this group');
+            }
+    
+            $groupMember = GroupMember::where('id',operator: $request->group_member_id)->where('group_id',$request->group_id)->update(['user_id'=>$request->user_id]);
+            $group = Group::findOrFail($request->group_id);
+            for ($i=0; $i < $group->total_cycles ; $i++) { 
+                 $contribution = new Contribution();
+                $contribution->amount = $group->contribution_amount;
+                $contribution->user_id = auth()->user()->id;
+                $contribution->group_id = $group->id;
+                $contribution->date = $group->id;
+                $contribution->status = 0;
+             }
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        $groupMember = GroupMember::where('id',$request->group_member_id)->where('group_id',$request->group_id)->update(['user_id'=>$request->user_id]);
         return redirect()->back()->with('success','Assign member successfully');
 
     }

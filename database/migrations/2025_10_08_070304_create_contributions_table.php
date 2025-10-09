@@ -12,13 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contributions', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('group_id');
-            $table->unsignedBigInteger('user_id');
-            $table->string('amount');
-            $table->string('date');
-            $table->tinyInteger('status');
-            $table->timestamps();
+             $table->id();
+    $table->foreignId('group_id')->constrained();
+    $table->foreignId('user_id')->constrained();
+    $table->integer('week_number');
+    $table->decimal('amount', 10, 2);
+    $table->date('contribution_date');
+    $table->enum('status', ['pending', 'completed', 'failed'])->default('pending');
+    $table->string('payment_method')->nullable();
+    $table->string('transaction_id')->nullable();
+    $table->timestamps();
         });
     }
 
