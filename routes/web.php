@@ -1,29 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AdvertisementController;
-use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CommentController;
-use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\EbookController;
-use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LeaderController;
 use App\Http\Controllers\Admin\MemberController;
-use App\Http\Controllers\Admin\NewsController;
-use App\Http\Controllers\Admin\OurServicesController;
-use App\Http\Controllers\Admin\PromocodeController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\SubCategoriesController;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\Web\WebsiteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Leader\AuthController as LeaderAuthController;
+use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\DashBoardController as UserDhashBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,14 +42,28 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::post('/leader/toggle-status', [LeaderController::class, 'toggleStatus'])->name('leader.toggle_user_status');
   Route::post('/leader/toggle-statuss', [MemberController::class, 'toggleStatus'])->name('member.toggle_user_status');
 });
-// All routes for the leader(role - 2) ---
 
+// All routes for the leader(role - 2) ---
 Route::prefix('leader')->group(function () {
 
     Route::get('/register', [LeaderAuthController::class, 'register'])->name('leader.register');
     Route::post('/register', [LeaderAuthController::class, 'registerStore'])->name('register.store');
     Route::post('/send-otp', [LeaderAuthController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('verify.otp');
+
+
+
+});
+
+// All routes for the user(role - 3) ---
+Route::prefix('user')->group(function () {
+
+    Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
+    Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
+    Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('send.otp');
+    Route::post('/verify-otp', [UserAuthController::class, 'verifyOtp'])->name('verify.otp');
+
+    Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
 
 
 
