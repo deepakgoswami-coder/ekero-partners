@@ -28,7 +28,7 @@ class AuthController extends Controller
         $user->role = 3; // User role
         $user->save();
 
-        return "hello";    
+        return redirect()->route('user.login')->with('success','Registration successful. Please login.');    
     }
     public function sendOtp(Request $request)
     {
@@ -52,46 +52,69 @@ class AuthController extends Controller
     }
 
     public function verifyOtp(Request $request)
-{
+    {
 
-    $request->validate([
-        'email' => 'required|email',
-        'otp' => 'required|min:4|max:6',
-    ]);
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|min:4|max:6',
+        ]);
 
-    $storedOtp = Session::get('otp_for_' . $request->email);
-    $expiry = Session::get('otp_expires_' . $request->email);
+        $storedOtp = Session::get('otp_for_' . $request->email);
+        $expiry = Session::get('otp_expires_' . $request->email);
 
-    if (!$storedOtp) {
+        if (!$storedOtp) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No OTP found. Please request a new one.'
+            ], 422);
+        }
+
+        if (now()->greaterThan($expiry)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'OTP expired. Please request a new one.'
+            ], 422);
+        }
+
+        if ($request->otp != $storedOtp) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid OTP. Please try again.'
+            ], 422);
+        }
+
+        // OTP is correct → remove it from session
+        Session::forget('otp_for_' . $request->email);
+        Session::forget('otp_expires_' . $request->email);
+
         return response()->json([
-            'status' => false,
-            'message' => 'No OTP found. Please request a new one.'
-        ], 422);
+            'status' => true,
+            'message' => 'OTP verified successfully!'
+        ]);
+    }
+    public function login(){
+        return view("user.login");
     }
 
-    if (now()->greaterThan($expiry)) {
-        return response()->json([
-            'status' => false,
-            'message' => 'OTP expired. Please request a new one.'
-        ], 422);
+    public function loginStore(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->withInput();
+        }
+
+        auth()->login($user);
+
+        return redirect()->route('user.dashboard');
+        
     }
 
-    if ($request->otp != $storedOtp) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Invalid OTP. Please try again.'
-        ], 422);
-    }
 
-    // OTP is correct → remove it from session
-    Session::forget('otp_for_' . $request->email);
-    Session::forget('otp_expires_' . $request->email);
-
-    return response()->json([
-        'status' => true,
-        'message' => 'OTP verified successfully!'
-    ]);
-}
 
 }
 

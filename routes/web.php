@@ -58,13 +58,19 @@ Route::prefix('leader')->group(function () {
 // All routes for the user(role - 3) ---
 Route::prefix('user')->group(function () {
 
+  // register and login Routes
     Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
     Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
     Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('send.otp');
     Route::post('/verify-otp', [UserAuthController::class, 'verifyOtp'])->name('verify.otp');
+    Route::get('/login', [UserAuthController::class, 'login'])->name('user.login');
+    Route::post('/login', [UserAuthController::class, 'loginStore'])->name('user.login.store');
 
-    Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
+    Route::middleware('user')->group(function () {
+
+      Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
 
 
+    });
 
 });
