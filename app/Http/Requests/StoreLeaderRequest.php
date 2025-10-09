@@ -24,7 +24,6 @@ class StoreLeaderRequest extends FormRequest
         return [ 
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
-            // 'phone' => 'required|string|max:10|unique:users,phone',
             'address' => 'required|string|max:500',
             'otp' => 'required|string|min:4|max:6',
             'idproof'=> 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
