@@ -29,6 +29,20 @@ class DatabaseSeeder extends Seeder
                 'status' => 1,
             ]
         );
+     
+
+
+// Create 30 Members
+for ($i = 1; $i <= 30; $i++) {
+    User::create([
+        'name' => 'Member ' . $i,
+        'email' => 'member' . $i . '@gmail.com',
+        'phone' => '900000' . str_pad($i, 4, '0', STR_PAD_LEFT), // unique phone
+        'password' => Hash::make('12345678'),
+        'role' => 3, // Member
+        'status' => 1,
+    ]);
+}
     
     }
 }

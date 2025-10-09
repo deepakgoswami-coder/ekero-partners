@@ -15,12 +15,12 @@
                 <div class="content-header-left col-md-6 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">Leader</h2>
+                            <h2 class="content-header-title float-start mb-0">Member</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">Leader</a>
+                                    <li class="breadcrumb-item"><a href="#">member</a>
                                     </li>
 
                                 </ol>
@@ -33,7 +33,7 @@
                 <div class="content-header-right text-md-end col-md-6 col-12 d-md-block d-none">
                     <div class="mb-1 breadcrumb-right">
                         <div class="dropdown">
-                            <a href="{{ route('leader.create') }}" class=" btn btn-primary ">Add leader</a>
+                            <a href="{{ route('member.create') }}" class=" btn btn-primary ">Add member</a>
 
                         </div>
                     </div>
@@ -58,10 +58,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($leader as $key => $val)
+                                            @foreach ($member as $key => $val)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
-                                                    <td><a href="{{route( 'user.group.link',$val->id) }}">{{ $val->name ?? '' }}</a></td>
+                                                    <td><a href="{{route( 'member.group.link',$val->id) }}">{{ $val->name ?? '' }}</a></td>
                                                     <td>{{ $val->email ?? '' }}</td>
                                                     <td>{{ $val->phone ?? '' }}</td>
                                                     <td>{{ $val->created_at ?? '' }}</td>
@@ -77,10 +77,10 @@
                                                     </td>
                                                     <td>
                                                         <div>
-                                                            <a href="{{ route('leader.edit',$val->id) }}"><img width="20px" src="{{ asset('admin/icons/edit.png') }}" alt=""></a>
-                                                            <form action="{{ route('leader.destroy', $val->id) }}" method="POST"
+                                                            <a href="{{ route('member.edit',$val->id) }}"><img width="20px" src="{{ asset('admin/icons/edit.png') }}" alt=""></a>
+                                                            <form action="{{ route('member.destroy', $val->id) }}" method="POST"
                                                                 style="display:inline;"
-                                                                onsubmit="return confirm('Are you sure you want to delete this leader?')">
+                                                                onsubmit="return confirm('Are you sure you want to delete this member?')">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="submit"
@@ -100,7 +100,7 @@
 
                                 <!-- Pagination links -->
                                 <div class="d-flex justify-content-center">
-                                    {{ $leader->links() }}
+                                    {{ $member->links() }}
                                 </div>
 
                             </div>
@@ -136,7 +136,7 @@
         })
         function toggleButton(id) {
             $.ajax({
-                url: "{{ route('leader.toggle_user_status') }}",
+                url: "{{ route('member.toggle_user_status') }}",
                 type: "POST",
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
