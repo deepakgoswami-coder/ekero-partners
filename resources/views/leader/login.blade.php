@@ -53,9 +53,11 @@
             <div class="content-body">
                 <div class="auth-wrapper auth-cover">
                     <div class="auth-inner row m-0">
-                       
+                        <!-- Brand logo--><a class="brand-logo" href="index.html">
+                                                    </a>
+                        <!-- /Brand logo-->
                         <!-- Left Text-->
-                                           <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
+                        <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
     <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
         <img class="img-fluid" 
              src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
@@ -69,13 +71,14 @@
              style="height: 120px; width:auto; position: static !important;">
     </a>
 </div>
+
                         <!-- /Left Text-->
                         <!-- Login-->
                         <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
                                 <h2 class="card-title fw-bold mb-1">Welcome to Ekero Partners! 👋</h2>
-                                <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
-                                <form class="auth-login-form mt-2" action="{{ route('login') }}" method="POST">
+                                <p class="card-text mb-2">Sign-in to your account and start the adventure</p>
+                                <form class="auth-login-form mt-2" action="{{ route('leader.login.store') }}" method="POST">
                                     @csrf
                                     <div class="mb-1">
                                         <label class="form-label" for="login-email">Email</label>
