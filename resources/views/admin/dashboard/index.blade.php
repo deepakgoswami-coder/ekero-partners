@@ -17,7 +17,7 @@
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
                                     <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Astrologer</span>
+                                    <span>Total Ports Set</span>
                                 </div>
                                 <div class="avatar bg-light-primary p-50">
                                     <span class="avatar-content"><i data-feather="user"
@@ -31,7 +31,7 @@
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
                                     <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total User</span>
+                                    <span>Total Portal</span>
                                 </div>
                                 <div class="avatar bg-light-danger p-50">
                                     <span class="avatar-content"><i data-feather="user-plus"
@@ -45,7 +45,7 @@
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
                                     <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Blog</span>
+                                    <span>Total Leader</span>
                                 </div>
                                 <div class="avatar bg-light-success p-50">
                                     <span class="avatar-content"><i data-feather="user-check"
@@ -59,7 +59,7 @@
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
                                     <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total News</span>
+                                    <span>Total Member</span>
                                 </div>
                                 <div class="avatar bg-light-warning p-50">
                                     <span class="avatar-content"><i data-feather="user-x"
@@ -92,7 +92,7 @@
                         <div class="card h-100 w-100">
                             <div class="card-header d-flex align-items-center justify-content-between">
                                 <div class="card-title mb-0">
-                                    <h5 class="mb-1">Astrologers vs Users</h5>
+                                    <h5 class="mb-1">Member vs Users</h5>
                                     <p class="card-subtitle">Distribution of registered accounts</p>
                                 </div>
                             </div>
