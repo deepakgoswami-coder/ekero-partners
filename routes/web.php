@@ -59,7 +59,12 @@ Route::prefix('leader')->group(function () {
 
     // middle ware applied routes for the leader
     Route::middleware('leader')->group(function () {
-      Route::get('/dashboard', action: [LeaderDashBoardController::class, 'dashboard'])->name('leader.dashboard'); 
+      Route::get('/dashboard',  [LeaderDashBoardController::class, 'dashboard'])->name('leader.dashboard'); 
+      Route::get('/group',  [LeaderDashBoardController::class, 'group'])->name('leader.group'); 
+      Route::get('/group/assign/{id}',  [LeaderDashBoardController::class, 'assignMember'])->name('leader.groups.assign.member'); 
+      Route::get('/group/create',  [LeaderDashBoardController::class, 'groupCreate'])->name('leader.groups.create'); 
+      Route::post('/group/assign/member',  [LeaderDashBoardController::class, 'assignMembers'])->name('leader.group.member.assign'); 
+      Route::get('/group/member/{id}',  [LeaderDashBoardController::class, 'groupMember'])->name('leader.groups.member'); 
       
     });
 });
