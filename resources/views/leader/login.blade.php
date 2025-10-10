@@ -58,19 +58,19 @@
                         <!-- /Brand logo-->
                         <!-- Left Text-->
                         <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
-    <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-        <img class="img-fluid" 
-             src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
-             alt="Login V2"
-             style="max-width: 85%; height: auto;">  <!-- 👈 reduced size -->
-    </div>
+                        <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
+                            <img class="img-fluid" 
+                                src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
+                                alt="Login V2"
+                                style="max-width: 85%; height: auto;">  <!-- 👈 reduced size -->
+                        </div>
 
-    <a class="brand-logo" href="index.html">
-        <img src="{{ asset('images/newlogo.png') }}" 
-             alt="Ekero Logo" 
-             style="height: 120px; width:auto; position: static !important;">
-    </a>
-</div>
+                        <a class="brand-logo" href="index.html">
+                            <img src="{{ asset('images/newlogo.png') }}" 
+                                alt="Ekero Logo" 
+                                style="height: 120px; width:auto; position: static !important;">
+                        </a>
+                    </div>
 
                         <!-- /Left Text-->
                         <!-- Login-->
@@ -86,7 +86,7 @@
                                     </div>
                                     <div class="mb-1">
                                         <div class="d-flex justify-content-between">
-                                            <label class="form-label" for="login-password">Password</label><a href="auth-forgot-password-cover.html"><small>Forgot Password?</small></a>
+                                            <label class="form-label" for="login-password">Password</label><a href="{{ route('leader.forget.password') }}"><small>Forgot Password?</small></a>
                                         </div>
                                         <div class="input-group input-group-merge form-password-toggle">
                                             <input class="form-control form-control-merge" id="login-password" type="password" name="password" placeholder="············" aria-describedby="login-password" tabindex="2" /><span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>

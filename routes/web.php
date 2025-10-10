@@ -56,6 +56,8 @@ Route::prefix('leader')->group(function () {
     Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('verify.otp');
     Route::get('/login', [LeaderAuthController::class, 'login'])->name('leader.login');
     Route::post('/login', [LeaderAuthController::class, 'loginStore'])->name('leader.login.store');
+    Route::get('/forget-password',[LeaderAuthController::class,'forgetPass'])->name('leader.forget.password');
+    Route::post('/forget-password',[LeaderAuthController::class,'forgetPassStore'])->name('leader.forget.password.store');
 
     // middle ware applied routes for the leader
     Route::middleware('leader')->group(function () {
