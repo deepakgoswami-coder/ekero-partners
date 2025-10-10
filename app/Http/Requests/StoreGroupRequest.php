@@ -24,13 +24,11 @@ class StoreGroupRequest extends FormRequest
          return [
             'name' => 'required|string|max:255',
             'leader_id' => 'required|exists:users,id',
-            'target_amount' => 'required|numeric|min:1',
             'portal_set_id' => 'required|exists:portal_sets,id',
             'group_number' => 'required|integer|min:1|max:52',
             'project_name' => 'required|string|max:255',
             'project_description' => 'nullable|string',
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
+          
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
             'video' => 'nullable|file|mimes:mp4,avi,mov|max:10240', // 10MB max
         ];

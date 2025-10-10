@@ -37,4 +37,8 @@ class Group extends Model
     public function members() {
         return $this->hasMany(GroupMember::class);
     }
+     public function contributions()
+    {
+        return $this->hasMany(Contribution::class);
+    }
 }

@@ -8,42 +8,197 @@ use App\Models\GroupMember;
 use App\Models\PortalSet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class DashBoardController extends Controller
 {
 
-    public function dashboard(){
+    public function dashboard()
+    {
         return view("leader.dashboard");
     }
-    public function group(){
-        $groups = Group::where('leader_id',auth()->user()->id)->latest()->paginate(10);
-        $member = User::where('role',3)->latest()->get();
-        return view('leader.group.index',compact('groups','member'));
+    public function group()
+    {
+        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
+        $member = User::where('role', 3)->latest()->get();
+        return view('leader.group.index', compact('groups', 'member'));
     }
-    public function groupCreate(){
-            $leader = User::where('role',2)->where('status',1)->latest()->get();
-        $portalSets  = PortalSet::where('is_active',1)->latest()->get();
-        return view("leader.group.create",compact('leader','portalSets'));
-    
-    }
-    public function assignMembers(Request $request){
-          $groupMember = GroupMember::where('group_id',$request->group_id)->where('user_id',$request->user_id)->first();
-            if ($groupMember) {
-            return redirect()->back()->with('error','Member alredy assign in this group');
-            }
-    
-            $groupMember = new GroupMember();
-            $groupMember->user_id = $request->user_id;
-            $groupMember->group_id = $request->group_id;
-            $groupMember->weekly_commitment = $request->weekly_commitment;
-            $groupMember->save();
-            return redirect()->back()->with('success','Member  assign successfully');
-           
-    }
-    public function groupMember($id){
-        $group = Group::findOrFail($id);
-      $groupMember = GroupMember::where('group_id',$id)->latest()->paginate(10);
-        return view("leader.group.assign-member",compact('groupMember','group'));
+    public function groupCreate()
+    {
+        $leader = User::where('role', 2)->where('status', 1)->latest()->get();
+        $portalSets = PortalSet::where('is_active', 1)->latest()->get();
+        return view("leader.group.create", compact('leader', 'portalSets'));
 
     }
+    public function assignMembers(Request $request)
+    {
+        $groupMember = GroupMember::where('group_id', $request->group_id)->where('user_id', $request->user_id)->first();
+        if ($groupMember) {
+            return redirect()->back()->with('error', 'Member alredy assign in this group');
+        }
+
+        $groupMember = new GroupMember();
+        $groupMember->user_id = $request->user_id;
+        $groupMember->group_id = $request->group_id;
+        $groupMember->weekly_commitment = $request->weekly_commitment;
+        $groupMember->save();
+        return redirect()->back()->with('success', 'Member  assign successfully');
+
+    }
+    public function groupMember($id)
+    {
+        $group = Group::findOrFail($id);
+        $groupMember = GroupMember::where('group_id', $id)->latest()->paginate(10);
+        return view("leader.group.assign-member", compact('groupMember', 'group'));
+
+    }
+    public function destroyMember($portalId, $userId)
+    {
+        $groupMember = GroupMember::where('user_id', $portalId)->where('group_id', $userId)->first();
+
+        if ($groupMember) {
+            $groupMember->delete();
+            return back()->with('success', 'Member removed successfully.');
+        }
+
+        return back()->with('error', 'Member not found in this group.');
+    }
+    public function memberDetails($id)
+    {
+        $user = User::findOrFail($id);
+        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
+        return view('leader.group.member-details', compact('user', 'groups'));
+    }
+    public function leaderProfile(Request $request)
+    {
+        $user = Auth::user();
+        $file = $request->file('profile_image');
+
+        if ($file) {
+            $destinationPath = public_path('uploads');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+            }
+
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move($destinationPath, $fileName);
+            chmod($destinationPath . '/' . $fileName, 0775);
+            $user->profile_image = $fileName;
+        }
+        $user->name = $request->name;
+        $user->address = $request->address;
+        $user->phone = $request->phone;
+        $user->save();
+
+        return redirect()->route("leader.dashboard")->with('success', 'Profile Updated successsfully');
+
+    }
+    public function leaderUpdateProfile()
+    {
+        $user = User::find(auth()->user()->id);
+        return view('leader.profile', compact('user'));
+    }
+    public function editGroup($id)
+    {
+        $groups = Group::findOrFail($id);
+        return view('leader.group.edit', compact('groups'));
+    }
+    public function updateGroup(Request $request, $id)
+    {
+        $group = Group::findOrFail($id);
+        $logo = $request->file('logo');
+
+        if ($logo) {
+            $destinationPath = public_path('uploads');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+            }
+
+            $fileName = time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move($destinationPath, $fileName);
+            chmod($destinationPath . '/' . $fileName, 0775);
+            $group->logo_path = $fileName;
+        }
+        $video = $request->file('video');
+
+        if ($video) {
+            $destinationPath = public_path('uploads');
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0775, true);
+            }
+
+            $fileName = time() . '.' . $video->getClientOriginalExtension();
+            $video->move($destinationPath, $fileName);
+            chmod($destinationPath . '/' . $fileName, 0775);
+
+            $group->video_path = $fileName;
+        }
+        $group->project_description = $request->project_description;
+        $group->project_name = $request->project_name;
+        $group->save();
+        return redirect()->back()->with('success', 'Group Updated successsfully');
+
+
+    }
+
+    public function contribution()
+    {
+
+        $portal = auth()->user()->ledPortals()->first();
+        $currentWeek = ceil((now()->diffInDays($portal->start_date)) / 7);
+        $currentWeek = min($currentWeek, 52);
+        // Calculate totals
+        $totalCollected = $portal->contributions()
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $thisWeekTotal = $portal->contributions()
+            ->where('week_number', $currentWeek)
+            ->where('status', 'completed')
+            ->sum('amount');
+
+        $totalMembers = $portal->members()->count();
+        $paidThisWeek = $portal->contributions()
+            ->where('week_number', $currentWeek)
+            ->where('status', 'completed')
+            ->distinct('user_id')
+            ->count('user_id');
+        // Weekly breakdown
+        $weeklyData = [];
+        for ($week = 1; $week <= $currentWeek; $week++) {
+            $weekTotal = $portal->contributions()
+                ->where('week_number', $week)
+                ->where('status', 'completed')
+                ->sum('amount');
+
+            $weeklyData[$week] = [
+                'total' => $weekTotal,
+                'target' => $portal->target_amount,
+                'progress' => $weekTotal > 0 ? ($weekTotal / $portal->target_amount) * 100 : 0,
+                'status' => $weekTotal >= $portal->target_amount ? 'completed' : 'pending'
+            ];
+        }
+
+        // Recent contributions
+        $recentContributions = $portal->contributions()
+            ->with('user')
+            ->where('status', 'completed')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+        return view('leader.contribution.index', compact(
+            'portal',
+            'currentWeek',
+            'totalCollected',
+            'thisWeekTotal',
+            'totalMembers',
+            'paidThisWeek',
+            'weeklyData',
+            'recentContributions'
+        ));
+
+    }
+
 }

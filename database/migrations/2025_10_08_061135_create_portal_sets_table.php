@@ -14,6 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->string('name'); // e.g., '2025 Committee Set'
             $table->integer('total_portals')->default(52);
+            $table->decimal('target_amount', 10, 2);
+
+            $table->date('start_date');
+            $table->date('end_date');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
