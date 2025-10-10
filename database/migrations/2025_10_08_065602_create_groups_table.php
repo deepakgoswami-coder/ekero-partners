@@ -15,15 +15,13 @@ return new class extends Migration {
             $table->foreignId('portal_set_id')->constrained();
             $table->string('name'); // e.g., 'Earth', 'Venus'
             $table->integer('group_number');
-            $table->foreignId('leader_id')->constrained('users');
-            $table->decimal('target_amount', 10, 2);
+            $table->unsignedBigInteger('leader_id')->nullable(); 
             $table->decimal('current_amount', 10, 2)->default(0);
-            $table->date('start_date');
-            $table->date('end_date');
             $table->string('project_name');
             $table->text('project_description');
             $table->string('logo_path')->nullable();
             $table->string('video_path')->nullable();
+            $table->longText('ivite_link')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

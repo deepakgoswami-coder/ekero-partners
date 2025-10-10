@@ -48,7 +48,7 @@
                                             <th>Name</th>
                                             <th>Number</th>
                                             <th>Email</th>
-                                            <th>Action</th>
+                                            <th>Weekly Contribution</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -57,10 +57,9 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td>{{ $val->member->name ?? '' }}</td>
                                                 <td>{{ $val->member->phone ?? '' }}</td>
-                                                <td>{{ $val->member->email ?? '' }}
+                                                <td>{{ $val->member->email ?? '' }}</td>
                                                 <td>
-                                                    <button @if($val->user_id == 0) data-bs-toggle="modal" data-bs-target="#addNewCard{{ $val->id }}"
-                                                     @endif   class="btn btn-primary">Assign Member</button>
+                                                   {{ $val->weekly_commitment ?? '' }}
                                                 </td>
                                             </tr>
                                             <div class="modal fade" id="addNewCard{{ $val->id }}" tabindex="-1"

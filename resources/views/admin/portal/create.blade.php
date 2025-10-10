@@ -59,8 +59,46 @@
                                                 <div class="mb-1 row">
                                                     <label class="col-form-label">Total portal <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="number" class="form-control" name="total_portals" placeholder="Total portal" value="{{ old('total_portals') }}">
+                                                        <input type="number" class="form-control" name="total_portals" placeholder="Total portal" readonly value="52">
                                                         @error('total_portals') <small class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Target Amount <span
+                                                            class="text-danger">*</span></label>
+                                                    <div class="col-md-12">
+                                                        <input type="number" step="0.01" class="form-control"
+                                                            name="target_amount" placeholder="Weekly target amount"
+                                                            value="{{ old('target_amount') }}">
+                                                        @error('target_amount') <small
+                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Start Date <span
+                                                            class="text-danger">*</span></label>
+                                                    <div class="col-md-12">
+                                                        <input type="date" class="form-control" name="start_date"
+                                                            value="{{ old('start_date') }}">
+                                                        @error('start_date') <small
+                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">End Date <span
+                                                            class="text-danger">*</span></label>
+                                                    <div class="col-md-12">
+                                                        <input type="date" class="form-control" name="end_date"
+                                                            value="{{ old('end_date') }}">
+                                                        @error('end_date') <small class="text-danger">{{ $message }}</small>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>

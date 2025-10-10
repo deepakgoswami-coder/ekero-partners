@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('leader.layouts.main')
 
 @section('title', 'Dashboard')
 
@@ -49,71 +49,57 @@
                         <div class="col-md-12 col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Group</h4>
+                                    <h4 class="card-title">{{ $groups->name }} Group</h4>
                                 </div>
                                 <div class="card-body">
-                                    <form class="form form-horizontal" action="{{ route('groups.update', $groups->id) }}"
+                                    <form class="form form-horizontal" action="{{ route('leader.groups.update', $groups->id) }}"
                                         method="post" enctype="multipart/form-data">
                                         @csrf
                                         @method('put')
                                         <div class="row">
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Name <span class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Project Name <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $groups->name }}">
-                                                        @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+                                                        <input type="text" class="form-control" name="project_name" placeholder="Name" value="{{ $groups->project_name }}">
+                                                        @error('project_name') <small class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
                                                 </div>
                                             </div>
-                                             <div class="col-6">
-                                                <div class="mb-1 mt-1">
-                                                    <label class="form-label" for="basicSelect"> Leader</label>
-                                                    <select class="form-select" name="leader_id" id="basicSelect">
-                                                    <option value="">Select Leader</option>    
-                                                    @foreach ($leader as $val)
-                                                        <option @if($val->id == $groups->leader_id)selected @endif  value="{{ $val->id }}">{{ $val->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    @error('leader_id')<div class="text text-danger">{{ $message }}</div> @enderror
-                                                </div>
-                                            </div>
+                                            
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Contribution Amount <span class="text-danger">*</span></label>
+                                                    <label class="col-form-label">project Description <span class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="number" class="form-control" name="contribution_amount" placeholder="Contribution Amount" value="{{ $groups->contribution_amount }}">
-                                                        @error('contribution_amount') <small class="text-danger">{{ $message }}</small> @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="mb-1 mt-1">
-                                                    <label class="form-label" for="basicSelect"> Frequency</label>
-                                                    <select class="form-select" name="frequency" id="basicSelect">
-                                                         <option value="">Select Frequency</option>    
-                                                         <option @if(1 == $groups->frequency)selected @endif  value="1">Weekly</option>
-                                                        <option @if(2 == $groups->frequency)selected @endif value="1">Monthly</option>
-                                                    </select>
-                                                    @error('frequency')<div class="text text-danger">{{ $message }}</div> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="mb-1 row">
-                                                    <label class="col-form-label">Total Cycles <span class="text-danger">*</span></label>
-                                                    <div class="col-md-12">
-                                                        <input type="number" class="form-control" name="total_cycles" placeholder="Total Cycles" value="{{ $groups->total_cycles }}">
-                                                        @error('total_cycles') <small class="text-danger">{{ $message }}</small> @enderror
+                                                        <input type="text" class="form-control" name="project_description" placeholder="Project Description" value="{{ $groups->project_description }}">
+                                                        @error('project_description') <small class="text-danger">{{ $message }}</small> @enderror
                                                     </div>
                                                 </div>
                                             </div>
                                            
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Start date <span class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Business Logo</label>
                                                     <div class="col-md-12">
-                                                        <input type="date" class="form-control" name="start_date" placeholder="Total Cycles" value="{{ $groups->start_date }}">
-                                                        @error('start_date') <small class="text-danger">{{ $message }}</small> @enderror
+                                                        <input type="file" class="form-control" name="logo"
+                                                            accept="image/*">
+                                                            @if ($groups->logo_path)
+                                                            <img src="{{ asset('uploads/'.$groups->logo_path) }}" width="100px" alt="">
+                                                            @endif
+                                                        @error('logo') <small class="text-danger">{{ $message }}</small>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Business Video</label>
+                                                    <div class="col-md-12">
+                                                        <input type="file" class="form-control" name="video"
+                                                            accept="video/*">
+                                                        @error('video') <small class="text-danger">{{ $message }}</small>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>

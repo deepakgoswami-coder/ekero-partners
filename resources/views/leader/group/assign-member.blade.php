@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('leader.layouts.main')
 @section('title', 'Dashboard')
 <style>
     .card {
@@ -55,13 +55,23 @@
                                         @foreach ($groupMember as $key => $val)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
-                                                <td>{{ $val->member->name ?? '' }}</td>
+                                                <td><a
+                                                        href="{{ route('leader.member.details', $val->user_id) }}">{{ $val->member->name ?? '' }}</a>
+                                                </td>
                                                 <td>{{ $val->member->phone ?? '' }}</td>
                                                 <td>{{ $val->member->email ?? '' }}</td>
-                                                <td><button class="btn btn-primary">Remove Member</button></td>
-                                                
+                                                <td>
+                                                    <form
+                                                        action="{{ route('portal.members.remove', [$val->user_id, $val->group_id]) }}"
+                                                        method="POST"
+                                                        onsubmit="return confirm('Are you sure you want to remove this member?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm">Remove
+                                                            Member</button>
+                                                    </form>
+                                                </td>
                                             </tr>
-                                            
                                         @endforeach
                                     </tbody>
                                 </table>

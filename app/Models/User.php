@@ -19,13 +19,11 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-            'email',
-            
-            'profile_image',
-            
-            'phone',
-            'password',
-            'status',
+        'email',
+        'profile_image',
+        'phone',
+        'password',
+        'status',
     ];
 
     /**
@@ -48,15 +46,39 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
     // messages sent by the user
-public function messagesSent()
-{
-    return $this->hasMany(Message::class, 'sender_id');
-}
+    public function ledPortals()
+    {
+        return $this->hasMany(Group::class, 'leader_id');
+    }
+    public function memberPortals()
+    {
+        return $this->belongsToMany(Group::class, 'portal_members', 'user_id', 'portal_id')
+            ->withPivot('weekly_commitment', 'total_contributed', 'is_active')
+            ->withTimestamps();
+    }
 
-// messages received by the user
-public function messagesReceived()
-{
-    return $this->hasMany(Message::class, 'receiver_id');
-}
+    /**
+     * Get all contributions made by user
+     */
+    public function contributions()
+    {
+        return $this->hasMany(Contribution::class);
+    }
+
+    /**
+     * Check if user is a leader
+     */
+    public function isLeader()
+    {
+        return $this->role == 'leader';
+    }
+
+    /**
+     * Get active led portal
+     */
+    public function activeLedPortal()
+    {
+        return $this->ledPortals()->where('is_active', true)->first();
+    }
 
 }
