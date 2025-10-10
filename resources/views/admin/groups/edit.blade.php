@@ -78,42 +78,85 @@
                                                     @error('leader_id')<div class="text text-danger">{{ $message }}</div> @enderror
                                                 </div>
                                             </div>
-                                            <div class="col-6">
-                                                <div class="mb-1 row">
-                                                    <label class="col-form-label">Contribution Amount <span class="text-danger">*</span></label>
-                                                    <div class="col-md-12">
-                                                        <input type="number" class="form-control" name="contribution_amount" placeholder="Contribution Amount" value="{{ $groups->contribution_amount }}">
-                                                        @error('contribution_amount') <small class="text-danger">{{ $message }}</small> @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="mb-1 mt-1">
-                                                    <label class="form-label" for="basicSelect"> Frequency</label>
-                                                    <select class="form-select" name="frequency" id="basicSelect">
-                                                         <option value="">Select Frequency</option>    
-                                                         <option @if(1 == $groups->frequency)selected @endif  value="1">Weekly</option>
-                                                        <option @if(2 == $groups->frequency)selected @endif value="1">Monthly</option>
-                                                    </select>
-                                                    @error('frequency')<div class="text text-danger">{{ $message }}</div> @enderror
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="mb-1 row">
-                                                    <label class="col-form-label">Total Cycles <span class="text-danger">*</span></label>
-                                                    <div class="col-md-12">
-                                                        <input type="number" class="form-control" name="total_cycles" placeholder="Total Cycles" value="{{ $groups->total_cycles }}">
-                                                        @error('total_cycles') <small class="text-danger">{{ $message }}</small> @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
                                            
+                                           <div class="col-6">
+                                                <div class="mb-1 mt-1">
+                                                    <label class="form-label" for="portalSetSelect">Portal Set <span
+                                                            class="text-danger">*</span></label>
+                                                    <select class="form-select" name="portal_set_id" id="portalSetSelect">
+                                                        <option value="">Select Portal Set</option>
+                                                        @foreach ($portalSets as $set)
+                                                            <option @if($val->id == $groups->portal_set_id)selected @endif value="{{ $set->id }}">{{ $set->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @error('portal_set_id')<div class="text text-danger">{{ $message }}
+                                                    </div> @enderror
+                                                </div>
+                                            </div>
+
                                             <div class="col-6">
                                                 <div class="mb-1 row">
-                                                    <label class="col-form-label">Start date <span class="text-danger">*</span></label>
+                                                    <label class="col-form-label">Group Number <span
+                                                            class="text-danger">*</span></label>
                                                     <div class="col-md-12">
-                                                        <input type="date" class="form-control" name="start_date" placeholder="Total Cycles" value="{{ $groups->start_date }}">
-                                                        @error('start_date') <small class="text-danger">{{ $message }}</small> @enderror
+                                                        <input type="number" class="form-control" name="group_number"
+                                                            placeholder="Position 1-52" value="{{ $group->group_number ?? '' }}"
+                                                            min="1" max="52">
+                                                        @error('group_number') <small
+                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Project Name <span
+                                                            class="text-danger">*</span></label>
+                                                    <div class="col-md-12">
+                                                        <input type="text" class="form-control" name="project_name"
+                                                            placeholder="Business project name"
+                                                            value="{{ $group->project_name ?? '' }}">
+                                                        @error('project_name') <small
+                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Project Description</label>
+                                                    <div class="col-md-12">
+                                                        <textarea class="form-control" name="project_description"
+                                                            placeholder="Describe the business project"
+                                                            rows="3">{{ $group->project_description ?? ''}}</textarea>
+                                                        @error('project_description') <small
+                                                        class="text-danger">{{ $message }}</small> @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            
+
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Business Logo</label>
+                                                    <div class="col-md-12">
+                                                        <input type="file" class="form-control" name="logo"
+                                                            accept="image/*">
+                                                        @error('logo') <small class="text-danger">{{ $message }}</small>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="mb-1 row">
+                                                    <label class="col-form-label">Business Video</label>
+                                                    <div class="col-md-12">
+                                                        <input type="file" class="form-control" name="video"
+                                                            accept="video/*">
+                                                        @error('video') <small class="text-danger">{{ $message }}</small>
+                                                        @enderror
                                                     </div>
                                                 </div>
                                             </div>

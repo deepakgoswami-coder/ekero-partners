@@ -30,10 +30,10 @@
 
                 <div class="content-header-right text-md-end col-md-3 col-12 d-md-block d-none">
                     <div class="mb-1 breadcrumb-right">
-                        <div class="dropdown">
+                        <!-- <div class="dropdown">
                             <a href="{{ route('leader.groups.create') }}" class=" btn btn-primary ">Add Group</a>
 
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -55,6 +55,7 @@
                                             <th>Current Amount</th>
                                             <th>Status</th>
                                             <th>Action</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -95,6 +96,8 @@
                                                         {{ date('M d, Y', strtotime($val->end_date)) }}
                                                     </small>
                                                 </td>
+                                                <td><a href="{{ route('leader.groups.edit', $val->id) }}"><img width="20px"
+                                                                src="{{ asset('admin/icons/edit.png') }}" alt=""></a></td>
                                                  <td>
                                                     <button  data-bs-toggle="modal" data-bs-target="#addNewCard{{ $val->id }}"
                                                         class="btn btn-primary">Assign Member</button>

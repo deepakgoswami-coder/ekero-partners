@@ -24,6 +24,10 @@ class StorePortalRequest extends FormRequest
         return [
             'name' => 'required',
             'total_portals' => 'required',
+              'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
+                        'target_amount' => 'required|numeric|min:1',
+
         ];
     }
 }

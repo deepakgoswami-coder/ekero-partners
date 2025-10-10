@@ -18,7 +18,7 @@ class LeaderMiddleware
     {
         if (!Auth::check() || Auth::user()->role != 2) {
             Auth::logout();
-            return redirect('/leader/dashboard') ->withErrors(['login_required' => 'Please login first to continue.']);
+            return redirect('/leader/login') ->withErrors(['login_required' => 'Please login first to continue.']);
         }
         return $next($request);
     }
