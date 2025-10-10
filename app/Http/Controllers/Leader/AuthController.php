@@ -132,6 +132,19 @@ class AuthController extends Controller
         
     }
 
+    public function forgetPass(){
+        return view("leader.forgetpass");
+    }
+
+    public function forgetPassStore(Request $request) {
+            return "jdflljs";
+
+        $leader = User::where("email", $request->email)->first();
+        $leader->password = Hash::make($request->password);
+        $leader->save();
+        return redirect()->route('leader.login')->with('success','PassWord Updated. Please login.');    
+    }
+
 
 
 }
