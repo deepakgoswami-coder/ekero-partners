@@ -1,9 +1,9 @@
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
-            <li class="nav-item me-auto">
-                <a class="navbar-brand" href="{{ route('dashboard') }}">
-                    <img src="{{ asset('web/logo.png') }}" width="90px" alt="">
+            <li class="nav-item ms-3 me-auto">
+                <a class="navbar-brand" href="{{ route('user.dashboard') }}">
+                    <img src="{{ asset('admin/icons/png.jpeg') }}" width="95px" height="60px" alt="">
                 </a>
             </li>
             <li class="nav-item nav-toggle">
@@ -21,8 +21,8 @@
     <div class="main-menu-content mt-2">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="nav-item">
-                <a class="d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                    href="{{ route('dashboard') }}">
+                <a class="d-flex align-items-center {{ request()->routeIs('user.dashboard') ? 'active' : '' }}"
+                    href="{{ route('user.dashboard') }}">
                     <i data-feather="home"></i>
                     <span class="menu-title text-truncate">Dashboards</span>
                 </a>
@@ -34,10 +34,20 @@
 
             <li class="nav-item">
                 <a class="d-flex align-items-center {{ request()->routeIs('user.group.*') ? 'active' : '' }}"
-                    href="{{ route('user.group') }}">
-                    <i data-feather="layers"></i> {{-- Group icon --}}
-                    <span class="menu-title text-truncate">Group</span>
+                    href="">
+                    <i data-feather="award"></i> {{-- My Contribution icon --}}
+                    <span class="menu-title text-truncate">My Contribution</span>
                 </a>
+            </li>
+            <li class="sidebar-list"><a
+                class="sidebar-link sidebar-title" href="#">
+                <i data-feather="users"></i> {{-- Group icon --}}
+                <span>My Group</span></a>
+                <ul class="sidebar-submenu">
+                    <li><a href="{{ route('user.group.details') }}">Details</a></li>
+                    <li><a href="{{ route('user.group.member') }}">Members</a></li>
+                    <!-- <li><a href="">Bid Proposals</a></li> -->
+                </ul>
             </li>
 
         </ul>

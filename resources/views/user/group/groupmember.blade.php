@@ -1,6 +1,6 @@
 @extends('user.layouts.main')
 
-@section('title', 'Dashboard')
+@section('title', 'groupmember')
 <style>
     .card {
         padding: 10px !important;
@@ -15,12 +15,12 @@
                 <div class="content-header-left col-md-6 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">Groups</h2>
+                            <h2 class="content-header-title float-start mb-0">Group Members</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">Home</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">Groups</a>
+                                    <li class="breadcrumb-item"><a href="#">Members</a>
                                     </li>
 
                                 </ol>
@@ -50,24 +50,30 @@
                                             <tr>
                                                 <th>Sr No.</th>
                                                 <th>Name</th>
-                                                <th>contribution_amount</th>
-                                                <th>start_date</th>
-                                                <th>total_members</th>
-                                                <th>total_cycles</th>
+                                                <th>Weekly Amt</th>
+                                                <th>Total Amt</th>
+                                                <th>Start Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($group as $key => $val)
+                                            @php
+                                                $i=1;
+                                            @endphp
+                                            @foreach ($groupMembers as $groupMember)
+                                                @php
+                                                    $user = \App\Models\User::where('id', $groupMember->user_id)->first();
+                                                @endphp
+
                                                 <tr>
-                                                    <td>{{ $key + 1 }}</td>
-                                                    <td><a href="{{route( 'group.contribution') }}">{{ $val->name ?? '' }}</a></td>
-                                                    <td>{{ $val->contribution_amount ?? '' }}</td>
-                                                    <td>{{ $val->start_date ?? '' }}</td>
-                                                    <td>{{ $val->total_members ?? '' }}</td>
-                                                    <td>{{ $val->total_cycles ?? '' }}</td>
-                                                    
+                                                    <td>{{ $i++ }}</td>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $groupMember->weekly_commitment }}</td>
+                                                    <td>{{ $groupMember->total_contributed }}</td>
+                                                    <td>{{ $groupMember->created_at }}</td>
                                                 </tr>
+                                            
                                             @endforeach
+                                            
                                         </tbody>
                                     </table>
                                 </div>
@@ -75,7 +81,6 @@
 
                                 <!-- Pagination links -->
                                 <div class="d-flex justify-content-center">
-                                    {{ $group->links() }}
                                 </div>
 
                             </div>

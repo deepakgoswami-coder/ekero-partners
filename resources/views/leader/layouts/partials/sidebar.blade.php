@@ -4,7 +4,7 @@
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item ms-3 me-auto">
-                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                <a class="navbar-brand" href="{{ route('leader.dashboard') }}">
                     <img src="{{ asset('admin/icons/png.jpeg') }}" width="95px" height="60px" alt="">
                 </a>
             </li>
