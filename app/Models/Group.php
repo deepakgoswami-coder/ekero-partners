@@ -41,4 +41,10 @@ class Group extends Model
     {
         return $this->hasMany(Contribution::class);
     }
+ 
+
+public function chats()
+{
+    return $this->hasMany(GroupChat::class);
+}
 }

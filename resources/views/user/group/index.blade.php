@@ -60,7 +60,7 @@
                                             @foreach ($group as $key => $val)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
-                                                    <td><a href="{{route( 'group.contribution') }}">{{ $val->name ?? '' }}</a></td>
+                                                    <td><a href="">{{ $val->name ?? '' }}</a></td>
                                                     <td>{{ $val->contribution_amount ?? '' }}</td>
                                                     <td>{{ $val->start_date ?? '' }}</td>
                                                     <td>{{ $val->total_members ?? '' }}</td>

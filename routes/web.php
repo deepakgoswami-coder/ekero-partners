@@ -45,6 +45,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::post('/group/member', [AdminController::class, 'assignMemberAdd'])->name('group.member.assign');
   Route::post('/leader/toggle-status', [LeaderController::class, 'toggleStatus'])->name('leader.toggle_user_status');
   Route::post('/leader/toggle-statuss', [MemberController::class, 'toggleStatus'])->name('member.toggle_user_status');
+  Route::post('/view-all/notification', [MemberController::class, 'viewAllNotification'])->name('notifications.markAllRead');
 });
 
 // All routes for the leader(role - 2) -------------------------------------------------------------
@@ -75,6 +76,7 @@ Route::prefix('leader')->group(function () {
     Route::get('/group/edit/{id}', [LeaderDashBoardController::class, 'editGroup'])->name('leader.groups.edit');
     Route::put('/group/update/{id}', [LeaderDashBoardController::class, 'updateGroup'])->name('leader.groups.update');
     Route::get('/contribution', [LeaderDashBoardController::class, 'contribution'])->name('leader.contribution');
+    Route::post('/real-all', [LeaderDashBoardController::class, 'readAllNotification'])->name('leader.notifications.markAllRead');
 
 
   });
@@ -109,7 +111,9 @@ Route::prefix('user')->group(function () {
       // contribution & payment
       Route::get('/my-contribution',[UserDhashBoardController::class,'myContribution'])->name('user.my.contribution');
       Route::post('/my-contribution/payment',[UserDhashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
-
+Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
+    Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
+    Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
 
 
   });

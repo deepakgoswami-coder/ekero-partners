@@ -44,8 +44,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <table class="table table-bordered">
-                                    <thead>
+                                <table class="table table-bordered  table table-hover table-bordered align-middle text-center">
+                                    <thead class="table-dark">
                                         <tr>
                                             <th>Sr No.</th>
                                             <th>Portal Name</th>
@@ -55,7 +55,6 @@
                                             <th>Current Amount</th>
                                             <th>Status</th>
                                             <th>Action</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -75,15 +74,17 @@
                                                 <td>
                                                     <span class="badge bg-primary">#{{ $val->group_number }}</span>
                                                 </td>
-                                                <td>
-                                                    ${{ number_format($val->current_amount, 2) }}
-                                                    @if($val->target_amount > 0)
-                                                        <br>
-                                                        <small class="text-muted">
-                                                            ({{ number_format(($val->current_amount / $val->target_amount) * 100, 1) }}%)
-                                                        </small>
-                                                    @endif
-                                                </td>
+                                              <td>
+                                ${{ number_format($val->current_amount, 2) }}<br>
+                                @if($val->target_amount > 0)
+                                <div class="progress" style="height: 8px; width:100%; margin-top:4px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ ($val->current_amount / $val->target_amount) * 100 }}%">
+                                    </div>
+                                </div>
+                                <small>{{ number_format(($val->current_amount/$val->target_amount)*100,1) }}%</small>
+                                @endif
+                            </td>
                                                 <td>
                                                     @if($val->is_active)
                                                         <span class="badge bg-success">Active</span>
@@ -96,12 +97,51 @@
                                                         {{ date('M d, Y', strtotime($val->end_date)) }}
                                                     </small>
                                                 </td>
-                                                <td><a href="{{ route('leader.groups.edit', $val->id) }}"><img width="20px"
-                                                                src="{{ asset('admin/icons/edit.png') }}" alt=""></a></td>
-                                                 <td>
-                                                    <button  data-bs-toggle="modal" data-bs-target="#addNewCard{{ $val->id }}"
-                                                        class="btn btn-primary">Assign Member</button>
-                                                </td>
+                                               <td>
+                                <div class="d-flex flex-column gap-1">
+                                    <a href="{{ route('leader.groups.edit', $val->id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i data-feather="edit"></i> Edit
+                                    </a>
+                                    <button class="btn btn-sm btn-primary"data-bs-toggle="modal" data-bs-target="#inviteModal">
+                                        <i data-feather="user-plus"></i> Invite
+                                    </button>
+                                    <button class="btn btn-sm btn-warning text-white" data-bs-toggle="modal" data-bs-target="#addNewCard{{ $val->id }}">
+                                        <i data-feather="user-check"></i> Assign
+                                    </button>
+                                </div>
+                            </td>
+                                                  
+
+                                                <!-- Invite Modal -->
+                                                <div class="modal fade" id="inviteModal" tabindex="-1"
+                                                    aria-labelledby="inviteModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content rounded-3">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="inviteModalLabel">Invite Member
+                                                                </h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <p>Share this link to invite a new member:</p>
+                                                                <div class="input-group">
+                                                                    <input type="text" id="inviteLink" class="form-control"
+                                                                        readonly value="{{ route('user.register',$val->invite_link)}}">
+                                                                    <button class="btn btn-outline-primary" id="copyBtn">
+                                                                        <i class="bi bi-clipboard"></i> Copy
+                                                                    </button>
+                                                                </div>
+                                                                <small class="text-success mt-2 d-none"
+                                                                    id="copiedMsg">Copied to clipboard!</small>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </tr>
                                             <div class="modal fade" id="addNewCard{{ $val->id }}" tabindex="-1"
                                                 aria-labelledby="addNewCardTitle" aria-hidden="true">
@@ -207,4 +247,16 @@
             }
         })
     </script>
+     <script>
+document.getElementById('copyBtn').addEventListener('click', function() {
+    const linkInput = document.getElementById('inviteLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // for mobile
+    navigator.clipboard.writeText(linkInput.value);
+    
+    const copiedMsg = document.getElementById('copiedMsg');
+    copiedMsg.classList.remove('d-none');
+    setTimeout(() => copiedMsg.classList.add('d-none'), 2000);
+});
+</script>
 @endsection

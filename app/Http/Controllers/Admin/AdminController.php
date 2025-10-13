@@ -63,8 +63,6 @@ class AdminController extends Controller
             'leader_id' => $request->leader_id,
             'target_amount' => $request->target_amount,
             'current_amount' => 0, 
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
             'project_name' => $request->project_name,
             'project_description' => $request->project_description,
             'logo_path' => $logoPath,
@@ -150,7 +148,8 @@ class AdminController extends Controller
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
-            throw $th;
+                    return redirect()->back()->with('error', 'Failed to assign member: ' . $th->getMessage());
+
         }
         return redirect()->back()->with('success','Assign member successfully');
 
