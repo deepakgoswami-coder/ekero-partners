@@ -69,7 +69,7 @@
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
                                 <h2 class="card-title fw-bold mb-1">Reset Your Password</h2>
                                 <!-- <p class="card-text mb-2">Make your app management easy and fun!</p> -->
-                                <form class="mt-2 row" action="{{ route('leader.forget.password.store') }}" method="POST" enctype="multipart/form-data">
+                                <form class="mt-2 row" action="{{ route('user.forget.password.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
 
                                     <!-- Email -->
@@ -115,7 +115,7 @@
                                     <button class="btn btn-primary w-100" type="submit" tabindex="8" id="signup-btn" disabled>Submit</button>
                                 </form>
 
-                                <p class="text-center mt-2"><a href="{{ route('leader.login') }}"><span>&nbsp;Back to Login</span></a></p>
+                                <p class="text-center mt-2"><a href="{{ route('user.login') }}"><span>&nbsp;Back to Login</span></a></p>
                                 
                             </div>
                         </div>
@@ -145,7 +145,7 @@ $(document).ready(function() {
         $('#send-otp').prop('disabled', true).text('Sending...');
 
         $.ajax({
-            url: "{{ route('leader.send.otp.pass') }}",  // backend route
+            url: "{{ route('user.send.otp.pass') }}",  // backend route
             type: "POST",
             data: {
                 email: email,
@@ -193,7 +193,7 @@ $(document).ready(function() {
         $(this).prop('disabled', true).text('Verifying...');
 
         $.ajax({
-            url: "{{ route('leader.verify.otp') }}",
+            url: "{{ route('user.verify.otp') }}",
             type: "POST",
             data: {
                 email: email,
@@ -250,7 +250,7 @@ $(document).ready(function() {
     $(this).prop('disabled', true).text('Verifying...');
 
     $.ajax({
-        url: "{{ route('leader.verify.otp') }}",
+        url: "{{ route('user.verify.otp') }}",
         type: "POST",
         data: {
             email: email,

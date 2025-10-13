@@ -96,7 +96,11 @@
     data-menu="vertical-menu-modern" data-col="">
     @if(Session::has('success'))
         <div id="success-alert" class="custom-success-alert">
-            <img width="20px" src="{{ asset('admin/icons/success.gif') }}" alt=""> {{ Session::get('success') }}
+            @if($user->progile_image)
+                <img width="20px" src="{{ asset('uploades/'.$user->profile_image) }}" alt=""> {{ Session::get('success') }}
+            @else
+                <img width="20px" src="{{ asset('admin/icons/success.gif') }}" alt=""> {{ Session::get('success') }}
+            @endIf
         </div>
     @endif
     @if(Session::has('error'))
@@ -132,12 +136,12 @@
                         aria-expanded="false">
                         <div class="user-nav d-sm-flex d-none"><span
                                 class="user-name fw-bolder">{{ auth()->user()->name ?? 'John Doe' }}</span><span
-                                class="user-status">@if(auth()->user()->role == 1) Admin @else Leader @endif </span></div><span class="avatar"><img class="round"
+                                class="user-status">@if(auth()->user()->role == 1) Admin @else User @endif </span></div><span class="avatar"><img class="round"
                                 src="{{ asset('admin/app-assets/images/portrait/small/avatar-s-11.jpg')}}" alt="avatar"
                                 height="40" width="40"><span class="avatar-status-online"></span></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a
-                            class="dropdown-item" href="page-profile.html"><i class="me-50" data-feather="user"></i>
+                            class="dropdown-item" href="{{ route('user.profile') }}"><i class="me-50" data-feather="user"></i>
                             Profile</a><a class="dropdown-item" href="{{ route('logout') }}"><i class="me-50"
                                 data-feather="power"></i> Logout</a>
                     </div>

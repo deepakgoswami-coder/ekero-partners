@@ -161,7 +161,7 @@ $(document).ready(function() {
         $('#send-otp').prop('disabled', true).text('Sending...');
 
         $.ajax({
-            url: "{{ route('send.otp') }}",  // backend route
+            url: "{{ route('user.send.otp') }}",  // backend route
             type: "POST",
             data: {
                 email: email,
@@ -209,7 +209,7 @@ $(document).ready(function() {
         $(this).prop('disabled', true).text('Verifying...');
 
         $.ajax({
-            url: "{{ route('verify.otp') }}",
+            url: "{{ route('user.verify.otp') }}",
             type: "POST",
             data: {
                 email: email,
@@ -266,7 +266,7 @@ $(document).ready(function() {
     $(this).prop('disabled', true).text('Verifying...');
 
     $.ajax({
-        url: "{{ route('verify.otp') }}",
+        url: "{{ route('user.verify.otp') }}",
         type: "POST",
         data: {
             email: email,

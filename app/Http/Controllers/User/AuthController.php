@@ -81,6 +81,27 @@ class AuthController extends Controller
         return response()->json(['message' => 'OTP sent to your email address!']);
     }
 
+    public function sendOtpPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        // $emailOtp = rand(000000, 999999);
+        $emailOtp = "123456";
+        $request->session()->put('new_email', $request->email);
+        $request->session()->put('new_otp', $emailOtp);
+
+        // Store OTP in session (or database)
+        Session::put('otp_for_' . $request->email, $emailOtp);
+        Session::put('otp_expires_' . $request->email, now()->addMinutes(5));
+ 
+        Mail::to($request->email)->send(new OtpEmail($emailOtp));
+ 
+
+        return response()->json(['message' => 'OTP sent to your email address!']);
+    }
+
     public function verifyOtp(Request $request)
     {
 
@@ -145,6 +166,23 @@ class AuthController extends Controller
 
     }
 
+    public function forgetPass(){
+        return view("user.forgetpass");
+    }
+
+    public function forgetPassStore(Request $request) {
+        $request->validate([
+            "email"=> "required|email",
+            "password"=> "required|min:6",
+        ]);
+        $user = User::where("email", $request->email)->first();
+        if(!$user){
+            return redirect()->route("user.register")->with("User Don't Exist ! Please Register First");
+        }
+        $user->password = Hash::make($request->password);
+        $user->save();
+        return redirect()->route('user.login')->with('success','PassWord Updated. Please login.');    
+    }
 
 
 }
