@@ -125,11 +125,14 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->withInput();
         }
 
+
         auth()->login($user);
+
 
         return redirect()->route('user.dashboard');
         

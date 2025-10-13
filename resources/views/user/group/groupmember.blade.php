@@ -15,7 +15,7 @@
                 <div class="content-header-left col-md-6 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">Group Members</h2>
+                            <h2 class="content-header-title float-start mb-0">My Group Members</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">Home</a>
@@ -30,20 +30,15 @@
                 </div>
 
 
-                <div class="content-header-right text-md-end col-md-6 col-12 d-md-block d-none">
-                    <div class="mb-1 breadcrumb-right">
-                        <!-- <div class="dropdown">
-                            <a href="{{ route('leader.create') }}" class=" btn btn-primary ">Add leader</a>
-
-                        </div> -->
-                    </div>
-                </div>
             </div>
             <div class="content-body card ">
                 <section id="basic-datatable">
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
+                                <div class="card-header">
+                        <h4 class="card-title mb-0">All Group Members</h4>
+                    </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead>

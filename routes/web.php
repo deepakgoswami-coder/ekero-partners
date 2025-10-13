@@ -47,16 +47,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::post('/leader/toggle-statuss', [MemberController::class, 'toggleStatus'])->name('member.toggle_user_status');
 });
 
-// All routes for the leader(role - 2) ---
+// All routes for the leader(role - 2) -------------------------------------------------------------
 Route::prefix('leader')->group(function () {
   // register and login Routes for leader
   Route::get('/register', [LeaderAuthController::class, 'register'])->name('leader.register');
   Route::post('/register', [LeaderAuthController::class, 'registerStore'])->name('register.store');
-  Route::post('/send-otp', [LeaderAuthController::class, 'sendOtp'])->name('send.otp');
-  Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('verify.otp');
+  Route::post('/send-otp', [LeaderAuthController::class, 'sendOtp'])->name('leader.send.otp');
+  Route::post('/verify-otp', [LeaderAuthController::class, 'verifyOtp'])->name('leader.verify.otp');
   Route::get('/login', [LeaderAuthController::class, 'login'])->name('leader.login');
   Route::post('/login', [LeaderAuthController::class, 'loginStore'])->name('leader.login.store');
   Route::get('/forget-password', [LeaderAuthController::class, 'forgetPass'])->name('leader.forget.password');
+  Route::post('/send-otp-password', [LeaderAuthController::class, 'sendOtpPassword'])->name('leader.send.otp.pass');
   Route::post('/forget-password', [LeaderAuthController::class, 'forgetPassStore'])->name('leader.forget.password.store');
 
   // middle ware applied routes for the leader
@@ -67,8 +68,7 @@ Route::prefix('leader')->group(function () {
     Route::get('/group/create', [LeaderDashBoardController::class, 'groupCreate'])->name('leader.groups.create');
     Route::post('/group/assign/member', [LeaderDashBoardController::class, 'assignMembers'])->name('leader.group.member.assign');
     Route::get('/group/member/{id}', [LeaderDashBoardController::class, 'groupMember'])->name('leader.groups.member');
-    Route::delete('/portal/{portal}/member/{user}', [LeaderDashBoardController::class, 'destroyMember'])
-    ->name('portal.members.remove');
+    Route::delete('/portal/{portal}/member/{user}', [LeaderDashBoardController::class, 'destroyMember'])->name('portal.members.remove');
     Route::get('/group/member/details/{id}', [LeaderDashBoardController::class, 'memberDetails'])->name('leader.member.details');
     Route::get('/update/profile', [LeaderDashBoardController::class, 'leaderUpdateProfile'])->name('leader.update.profile');
     Route::post('/update/profile', [LeaderDashBoardController::class, 'leaderProfile'])->name('leader.update.profilePost');
@@ -81,7 +81,7 @@ Route::prefix('leader')->group(function () {
 });
 
 
-// All routes for the user(role - 3) ---
+// All routes for the user(role - 3) -------------------------------------------------
 Route::prefix('user')->group(function () {
   // register and login Routes for user
     Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
@@ -105,6 +105,11 @@ Route::prefix('user')->group(function () {
       Route::get('/contribution', [GroupController::class, 'group'])->name('user.group.contribution');
       Route::get('/group-details', [GroupController::class, 'groupDetails'])->name('user.group.details');
       Route::get('/group-member', [GroupController::class,'groupMember'])->name('user.group.member');
+
+      // contribution & payment
+      Route::get('/my-contribution',[UserDhashBoardController::class,'myContribution'])->name('user.my.contribution');
+      Route::post('/my-contribution/payment',[UserDhashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
+
 
 
   });
