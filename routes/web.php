@@ -84,19 +84,27 @@ Route::prefix('leader')->group(function () {
 // All routes for the user(role - 3) ---
 Route::prefix('user')->group(function () {
   // register and login Routes for user
-  Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
-  Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
-  Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('send.otp');
-  Route::post('/verify-otp', [UserAuthController::class, 'verifyOtp'])->name('verify.otp');
-  Route::get('/login', [UserAuthController::class, 'login'])->name('user.login');
-  Route::post('/login', [UserAuthController::class, 'loginStore'])->name('user.login.store');
+    Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
+    Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
+    Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('user.send.otp');
+    Route::post('/verify-otp', [UserAuthController::class, 'verifyOtp'])->name('user.verify.otp');
+    Route::get('/login', [UserAuthController::class, 'login'])->name('user.login');
+    Route::post('/login', [UserAuthController::class, 'loginStore'])->name('user.login.store');
+    Route::post('/send-otp-password', [UserAuthController::class, 'sendOtpPassword'])->name('user.send.otp.pass');
+    Route::get('/forget-password',[UserAuthController::class,'forgetPass'])->name('user.forget.password');
+    Route::post('/forget-password',[UserAuthController::class,'forgetPassStore'])->name('user.forget.password.store');
+    
+    // middle ware applied routes for the user
+    Route::middleware('user')->group(function () {
+      Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
+      Route::get('/profile', [UserDhashBoardController::class, 'userProfile'])->name('user.profile');
+      Route::post('/profile', [UserDhashBoardController::class, 'userUpdateProfile'])->name('user.update.profile');
 
-
-  // middle ware applied routes for the user
-  Route::middleware('user')->group(function () {
-    Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
-    Route::get('/group', [GroupController::class, 'group'])->name('user.group');
-    Route::get('/contribution', [GroupController::class, 'group'])->name('group.contribution');
+      // Group & Details routes
+      Route::get('/group', [GroupController::class, 'group'])->name('user.group');
+      Route::get('/contribution', [GroupController::class, 'group'])->name('user.group.contribution');
+      Route::get('/group-details', [GroupController::class, 'groupDetails'])->name('user.group.details');
+      Route::get('/group-member', [GroupController::class,'groupMember'])->name('user.group.member');
 
 
   });
