@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLeaderRequest;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,9 +18,9 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-     public function index()
+    public function index()
     {
-        $member = User::where('role',3)->latest()->paginate(10);
+        $member = User::where('role', 3)->latest()->paginate(10);
         return view('admin.member.index', compact('member'));
     }
 
@@ -56,7 +58,7 @@ class MemberController extends Controller
         $user->profile_image = $fileName;
         $user->role = 3;
         $user->save();
-            return redirect()->route('member.index')->with('success','Add Leader successfully');
+        return redirect()->route('member.index')->with('success', 'Add Leader successfully');
 
     }
 
@@ -73,7 +75,7 @@ class MemberController extends Controller
      */
     public function edit(string $id)
     {
-              $member = User::findOrFail($id);
+        $member = User::findOrFail($id);
 
         return view('admin.member.edit', compact('member'));
     }
@@ -83,7 +85,7 @@ class MemberController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         $user =  User::findOrFail($id);
+        $user = User::findOrFail($id);
         $user->fill($request->all());
         $file = $request->file('profile_image');
 
@@ -92,17 +94,17 @@ class MemberController extends Controller
             if (!File::exists($destinationPath)) {
                 File::makeDirectory($destinationPath, 0775, true);
             }
-    
+
             $fileName = time() . '.' . $file->getClientOriginalExtension();
             $file->move($destinationPath, $fileName);
             chmod($destinationPath . '/' . $fileName, 0775);
-            
+
             $user->profile_image = $fileName;
         }
 
         $user->role = 3;
         $user->save();
-            return redirect()->route('member.index')->with('success','Update member successfully');
+        return redirect()->route('member.index')->with('success', 'Update member successfully');
 
     }
 
@@ -113,20 +115,30 @@ class MemberController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-            return redirect()->route('member.index')->with('success','Deleted    member successfully');
+        return redirect()->route('member.index')->with('success', 'Deleted    member successfully');
 
     }
-    public function toggleStatus(Request $request){
-        $user = User::where('role',3)->find($request->id);
+    public function toggleStatus(Request $request)
+    {
+        $user = User::where('role', 3)->find($request->id);
         $user->status = $user->status == 1 ? 0 : 1;
         $user->save();
         return response()->json($user->status);
     }
-    public function groupLink($id){
+    public function groupLink($id)
+    {
         $groupIds = GroupMember::where('user_id', $id)->pluck('group_id');
-$group = Group::whereIn('id', $groupIds)->latest()->paginate(10);
+        $group = Group::whereIn('id', $groupIds)->latest()->paginate(10);
 
 
-        return view('admin.users.groups',compact('group'));
+        return view('admin.users.groups', compact('group'));
+    }
+    public function viewAllNotification(Request $request)
+    {
+        Notification::where('receiver_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return redirect()->back(); // or return JSON if using AJAX
     }
 }

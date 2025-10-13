@@ -112,21 +112,54 @@
             <ul class="nav navbar-nav align-items-center ms-auto">
 
   <div id="flash-message" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+@php
+                    $notifications = App\Models\Notification::where('is_read', 0)->where('receiver_id', auth()->user()->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    $unreadCount = $notifications->where('is_read', 0)->count();
+                @endphp
 
-                <!-- <li class="nav-item dropdown dropdown-notification me-25"><a class="nav-link" href="#"
-                        data-bs-toggle="dropdown"><i class="ficon" data-feather="bell"></i><span
-                            class="badge rounded-pill bg-danger badge-up">5</span></a>
+                <li class="nav-item dropdown dropdown-notification me-25">
+                    <a class="nav-link" href="#" data-bs-toggle="dropdown">
+                        <i class="ficon" data-feather="bell"></i>
+                        @if($unreadCount > 0)
+                            <span class="badge rounded-pill bg-danger badge-up">{{ $unreadCount }}</span>
+                        @endif
+                    </a>
+
                     <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
-                        <li class="dropdown-menu-header">
-                            <div class="dropdown-header d-flex">
-                                <h4 class="notification-title mb-0 me-auto">Notifications</h4>
-                                <div class="badge rounded-pill badge-light-primary">6 New</div>
-                            </div>
+                        <li class="dropdown-menu-header d-flex justify-content-between align-items-center">
+                            <h4 class="notification-title mb-0">Notifications</h4>
+                            @if($unreadCount > 0)
+                                <form action="{{ route('notifications.markAllRead') }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-link">Mark all read</button>
+                                </form>
+                            @endif
                         </li>
 
-
+                        @forelse($notifications as $notif)
+                            <li class="scrollable-container media-list">
+                                <a class="d-flex dropdown-item {{ $notif->is_read ? '' : 'fw-bold' }}"
+                                    href="{{ route('leader.member.details', $notif->user_id) }}">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-primary">
+                                            <i data-feather="bell" class="avatar-icon"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="media-heading">{{ $notif->title }}</h6>
+                                        <small class="notification-text">{{ $notif->created_at->diffForHumans() }}</small>
+                                    </div>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="dropdown-item text-center">
+                                No notifications
+                            </li>
+                        @endforelse
                     </ul>
-                </li> -->
+                </li>
                 <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link"
                         id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -136,9 +169,11 @@
                                 src="{{ asset('admin/app-assets/images/portrait/small/avatar-s-11.jpg')}}" alt="avatar"
                                 height="40" width="40"><span class="avatar-status-online"></span></span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a
-                            class="dropdown-item" href="page-profile.html"><i class="me-50" data-feather="user"></i>
-                            Profile</a><a class="dropdown-item" href="{{ route('logout') }}"><i class="me-50"
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
+                        <!-- <a
+                            class="dropdown-item" href="#"><i class="me-50" data-feather="user"></i>
+                            Profile</a> -->
+                            <a class="dropdown-item" href="{{ route('logout') }}"><i class="me-50"
                                 data-feather="power"></i> Logout</a>
                     </div>
                 </li>

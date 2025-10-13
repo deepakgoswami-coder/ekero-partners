@@ -23,7 +23,7 @@
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="nav-item">
                 <a class="d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                   href="{{ route('dashboard') }}">
+                   href="{{ route('leader.dashboard') }}">
                     <i data-feather="home"></i>
                     <span class="menu-title text-truncate">Dashboards</span>
                 </a>

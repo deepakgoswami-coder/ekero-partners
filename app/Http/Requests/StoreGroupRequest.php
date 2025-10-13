@@ -28,6 +28,8 @@ class StoreGroupRequest extends FormRequest
             'group_number' => 'required|integer|min:1|max:52',
             'project_name' => 'required|string|max:255',
             'project_description' => 'nullable|string',
+                                    'target_amount' => 'required|numeric|min:1',
+
           
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
             'video' => 'nullable|file|mimes:mp4,avi,mov|max:10240', // 10MB max

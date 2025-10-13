@@ -33,9 +33,9 @@
                 <div class="content-header-right text-md-end col-md-6 col-12 d-md-block d-none">
                     <div class="mb-1 breadcrumb-right">
                         <!-- <div class="dropdown">
-                            <a href="{{ route('leader.create') }}" class=" btn btn-primary ">Add leader</a>
+                                <a href="{{ route('leader.create') }}" class=" btn btn-primary ">Add leader</a>
 
-                        </div> -->
+                            </div> -->
                     </div>
                 </div>
             </div>
@@ -50,24 +50,60 @@
                                             <tr>
                                                 <th>Sr No.</th>
                                                 <th>Name</th>
-                                                <th>contribution_amount</th>
+                                                <th>Target Amount</th>
                                                 <th>start_date</th>
-                                                <th>total_members</th>
-                                                <th>total_cycles</th>
+                                                <th>End date</th>
+                                                <th>Total Cycles</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($group as $key => $val)
-                                                <tr>
-                                                    <td>{{ $key + 1 }}</td>
-                                                    <td>{{ $val->name ?? '' }}</td>
-                                                    <td>{{ $val->contribution_amount ?? '' }}</td>
-                                                    <td>{{ $val->start_date ?? '' }}</td>
-                                                    <td>{{ $val->total_members ?? '' }}</td>
-                                                    <td>{{ $val->total_cycles ?? '' }}</td>
-                                                    
-                                                </tr>
-                                            @endforeach
+                                            <tr>
+                                                <td>1</td>
+                                                <td><a
+                                                        href="{{ route('groups.assign.member', $group->id) }}">{{ $group->name ?? '' }}</a>
+                                                </td>
+                                                <td>{{ $group->target_amount ?? '' }}</td>
+                                                <td>{{ $portalSet->start_date ?? '' }}</td>
+                                                <td>{{ $portalSet->end_date ?? '' }}</td>
+                                                <td>{{ $portalSet->total_portals ?? '' }}</td>
+                                                <!-- Invite Member Link -->
+                                                <td><a class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#inviteModal">Invite
+                                                        Member</a></td>
+
+                                                <!-- Invite Modal -->
+                                                <div class="modal fade" id="inviteModal" tabindex="-1"
+                                                    aria-labelledby="inviteModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content rounded-3">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="inviteModalLabel">Invite Member
+                                                                </h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body text-center">
+                                                                <p>Share this link to invite a new member:</p>
+                                                                <div class="input-group">
+                                                                    <input type="text" id="inviteLink" class="form-control"
+                                                                        readonly value="{{ route('user.register',$group->invite_link)}}">
+                                                                    <button class="btn btn-outline-primary" id="copyBtn">
+                                                                        <i class="bi bi-clipboard"></i> Copy
+                                                                    </button>
+                                                                </div>
+                                                                <small class="text-success mt-2 d-none"
+                                                                    id="copiedMsg">Copied to clipboard!</small>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -75,7 +111,6 @@
 
                                 <!-- Pagination links -->
                                 <div class="d-flex justify-content-center">
-                                    {{ $group->links() }}
                                 </div>
 
                             </div>
@@ -136,4 +171,17 @@
             });
         }
     </script>
+    <script>
+document.getElementById('copyBtn').addEventListener('click', function() {
+    const linkInput = document.getElementById('inviteLink');
+    linkInput.select();
+    linkInput.setSelectionRange(0, 99999); // for mobile
+    navigator.clipboard.writeText(linkInput.value);
+    
+    const copiedMsg = document.getElementById('copiedMsg');
+    copiedMsg.classList.remove('d-none');
+    setTimeout(() => copiedMsg.classList.add('d-none'), 2000);
+});
+</script>
+
 @endsection

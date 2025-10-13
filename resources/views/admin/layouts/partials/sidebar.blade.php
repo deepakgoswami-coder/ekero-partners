@@ -41,13 +41,13 @@
     </a>
 </li>
 
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="d-flex align-items-center {{ request()->routeIs('groups.*') ? 'active' : '' }}"
        href="{{ route('groups.index') }}">
         <i data-feather="user-check"></i> {{-- Leader icon --}}
         <span class="menu-title text-truncate">Group</span>
     </a>
-</li> 
+</li>  -->
 
 <li class="nav-item">
     <a class="d-flex align-items-center {{ request()->routeIs('leader.*') ? 'active' : '' }}"

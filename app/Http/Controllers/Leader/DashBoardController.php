@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Leader;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\Notification;
 use App\Models\PortalSet;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -37,11 +38,14 @@ class DashBoardController extends Controller
         if ($groupMember) {
             return redirect()->back()->with('error', 'Member alredy assign in this group');
         }
+        $group = Group::find($request->group_id);
 
         $groupMember = new GroupMember();
         $groupMember->user_id = $request->user_id;
         $groupMember->group_id = $request->group_id;
         $groupMember->weekly_commitment = $request->weekly_commitment;
+        $shares = ($group->target_amount)/($request->weekly_commitment);
+        $groupMember->group_sare = $shares;
         $groupMember->save();
         return redirect()->back()->with('success', 'Member  assign successfully');
 
@@ -200,5 +204,13 @@ class DashBoardController extends Controller
         ));
 
     }
+    public function readAllNotification(Request $request){
 
+      Notification::where('receiver_id', Auth::id())
+                    ->where('is_read', false)
+                    ->update(['is_read' => true]);
+
+        return redirect()->back(); // or return JSON if using AJAX
+
+}
 }

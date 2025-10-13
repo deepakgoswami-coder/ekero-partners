@@ -13,11 +13,11 @@
     <meta name="author" content="PIXINVENT">
     <title>Ekero Partners</title>
     <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
-<link rel="icon" type="image/x-icon" href="{{ asset('web/fabb.ico') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('web/fabb.ico') }}">
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600"
         rel="stylesheet">
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/css/themes/dark-layout.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/css/themes/bordered-layout.css')}}">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/vendors/css/charts/apexcharts.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/vendors/css/extensions/toastr.min.css')}}">
     <!-- END: Vendor CSS-->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- BEGIN: Theme CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/css/bootstrap.css')}}">
@@ -74,6 +74,7 @@
             transition: opacity 0.5s ease-in-out;
             width: fit-content;
         }
+
         .custom-danger-alert {
             position: fixed;
             top: 20px;
@@ -101,7 +102,7 @@
     @endif
     @if(Session::has('error'))
         <div id="success-alert" class="custom-danger-alert">
-             {{ Session::get('error') }}
+            {{ Session::get('error') }}
         </div>
     @endif
     <!-- BEGIN: Header-->
@@ -111,22 +112,56 @@
 
             <ul class="nav navbar-nav align-items-center ms-auto">
 
-  <div id="flash-message" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+                <div id="flash-message" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+                @php
+                    $notifications = App\Models\Notification::where('is_read', 0)->where('receiver_id', auth()->user()->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    $unreadCount = $notifications->where('is_read', 0)->count();
+                @endphp
 
-                <!-- <li class="nav-item dropdown dropdown-notification me-25"><a class="nav-link" href="#"
-                        data-bs-toggle="dropdown"><i class="ficon" data-feather="bell"></i><span
-                            class="badge rounded-pill bg-danger badge-up">5</span></a>
+                <li class="nav-item dropdown dropdown-notification me-25">
+                    <a class="nav-link" href="#" data-bs-toggle="dropdown">
+                        <i class="ficon" data-feather="bell"></i>
+                        @if($unreadCount > 0)
+                            <span class="badge rounded-pill bg-danger badge-up">{{ $unreadCount }}</span>
+                        @endif
+                    </a>
+
                     <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
-                        <li class="dropdown-menu-header">
-                            <div class="dropdown-header d-flex">
-                                <h4 class="notification-title mb-0 me-auto">Notifications</h4>
-                                <div class="badge rounded-pill badge-light-primary">6 New</div>
-                            </div>
+                        <li class="dropdown-menu-header d-flex justify-content-between align-items-center">
+                            <h4 class="notification-title mb-0">Notifications</h4>
+                            @if($unreadCount > 0)
+                                <form action="{{ route('leader.notifications.markAllRead') }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-link">Mark all read</button>
+                                </form>
+                            @endif
                         </li>
 
-
+                        @forelse($notifications as $notif)
+                            <li class="scrollable-container media-list">
+                                <a class="d-flex dropdown-item {{ $notif->is_read ? '' : 'fw-bold' }}"
+                                    href="{{ route('leader.member.details', $notif->user_id) }}">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-primary">
+                                            <i data-feather="bell" class="avatar-icon"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="media-heading">{{ $notif->title }}</h6>
+                                        <small class="notification-text">{{ $notif->created_at->diffForHumans() }}</small>
+                                    </div>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="dropdown-item text-center">
+                                No notifications
+                            </li>
+                        @endforelse
                     </ul>
-                </li> -->
+                </li>
+
                 <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link"
                         id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -137,7 +172,8 @@
                                 height="40" width="40"><span class="avatar-status-online"></span></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a
-                            class="dropdown-item" href="{{ route('leader.update.profile') }}"><i class="me-50" data-feather="user"></i>
+                            class="dropdown-item" href="{{ route('leader.update.profile') }}"><i class="me-50"
+                                data-feather="user"></i>
                             Profile</a><a class="dropdown-item" href="{{ route('logout') }}"><i class="me-50"
                                 data-feather="power"></i> Logout</a>
                     </div>
@@ -155,12 +191,12 @@
             }
         }, 3000); // 3 seconds
     </script>
-    
+
     <script>
-        
-function showToast(message, type = 'success') {
-    // type can be 'success', 'danger', 'warning', 'info'
-    let toastHTML = `
+
+        function showToast(message, type = 'success') {
+            // type can be 'success', 'danger', 'warning', 'info'
+            let toastHTML = `
         <div class="toast align-items-center text-white bg-${type} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
@@ -170,18 +206,18 @@ function showToast(message, type = 'success') {
             </div>
         </div>
     `;
-    let flashContainer = document.getElementById('flash-message');
-    flashContainer.insertAdjacentHTML('beforeend', toastHTML);
+            let flashContainer = document.getElementById('flash-message');
+            flashContainer.insertAdjacentHTML('beforeend', toastHTML);
 
-    // Initialize Bootstrap toast
-    let toastElList = [].slice.call(flashContainer.querySelectorAll('.toast'));
-    let toastList = toastElList.map(function (toastEl) {
-        let toast = new bootstrap.Toast(toastEl, { delay: 3000 });
-        toast.show();
-        toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
-        return toast;
-    });
-}
+            // Initialize Bootstrap toast
+            let toastElList = [].slice.call(flashContainer.querySelectorAll('.toast'));
+            let toastList = toastElList.map(function (toastEl) {
+                let toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+                toast.show();
+                toastEl.addEventListener('hidden.bs.toast', () => toastEl.remove());
+                return toast;
+            });
+        }
     </script>
-     
+
     <!-- END: Header-->

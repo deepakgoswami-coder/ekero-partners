@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use function PHPUnit\Framework\returnArgument;
 
 class LeaderController extends Controller
@@ -102,9 +103,12 @@ class LeaderController extends Controller
 
             $baseName = $names[$nameIndex];
             $groupName = $cycle > 0 ? $baseName . $cycle : $baseName;
+            $inviteLink = Str::uuid()->toString();
+
 
             $group = Group::create([
                 'portal_set_id' => $portalSet->id,
+                'target_amount' => $portalSet->target_amount,
                 'name' => $groupName,
                 'group_number' => 52,
                 'leader_id' => $user->id,
@@ -113,8 +117,14 @@ class LeaderController extends Controller
                 'project_description' => $request->project_description ?? "Auto-generated group",
                 'logo_path' => $logoPath,
                 'video_path' => $videoPath,
+                'invite_link' => $inviteLink,
                 'is_active' => true
             ]);
+              $this->createNotification(
+                $request->name . " registered successfully",
+                $user->id,
+                auth()->user()->id
+            );
 
             DB::commit();
             return redirect()->route('leader.index')->with('success', 'Add Leader successfully');
@@ -191,7 +201,8 @@ class LeaderController extends Controller
     }
     public function groupLink($id)
     {
-        $group = Group::where('leader_id', $id)->latest()->paginate(10);
-        return view('admin.users.groups', compact('group'));
+        $group = Group::where('leader_id', $id)->latest()->first();
+        $portalSet = PortalSet::find($group->portal_set_id);
+        return view('admin.users.groups', compact('group', 'portalSet'));
     }
 }

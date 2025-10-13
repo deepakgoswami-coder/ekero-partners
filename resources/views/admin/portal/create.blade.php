@@ -78,30 +78,30 @@
                                                 </div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="mb-1 row">
-                                                    <label class="col-form-label">Start Date <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="col-md-12">
-                                                        <input type="date" class="form-control" name="start_date"
-                                                            value="{{ old('start_date') }}">
-                                                        @error('start_date') <small
-                                                        class="text-danger">{{ $message }}</small> @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
+    <div class="mb-1 row">
+        <label class="col-form-label">Start Date <span class="text-danger">*</span></label>
+        <div class="col-md-12">
+            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('start_date') }}">
+            @error('start_date')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+    </div>
+</div>
 
-                                            <div class="col-6">
-                                                <div class="mb-1 row">
-                                                    <label class="col-form-label">End Date <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="col-md-12">
-                                                        <input type="date" class="form-control" name="end_date"
-                                                            value="{{ old('end_date') }}">
-                                                        @error('end_date') <small class="text-danger">{{ $message }}</small>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
+<div class="col-6">
+    <div class="mb-1 row">
+        <label class="col-form-label">End Date <span class="text-danger">*</span></label>
+        <div class="col-md-12">
+            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('end_date') }}">
+            @error('end_date')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
+        </div>
+    </div>
+</div>
+
+
                                            
                                             
                                             
@@ -143,4 +143,21 @@
             }
         })
     </script>
+    
+<script>
+document.getElementById('start_date').addEventListener('change', function () {
+    const startDate = new Date(this.value);
+
+    if (isNaN(startDate)) return; // if invalid date
+
+    // Add 1 year
+    const endDate = new Date(startDate);
+    endDate.setFullYear(endDate.getFullYear() + 1);
+
+    // Format date to YYYY-MM-DD
+    const formatted = endDate.toISOString().split('T')[0];
+
+    document.getElementById('end_date').value = formatted;
+});
+</script>
 @endsection
