@@ -33,10 +33,10 @@
             </li>
 
             <li class="nav-item">
-                <a class="d-flex align-items-center {{ request()->routeIs('user.group.*') ? 'active' : '' }}"
-                    href="">
-                    <i data-feather="award"></i> {{-- My Contribution icon --}}
-                    <span class="menu-title text-truncate">My Contribution</span>
+                <a class="d-flex align-items-center "
+                    href="{{ route ('user.my.contribution')}}">
+                    <i data-feather="award"></i>
+                    <span class="menu-title text-truncate">My Contribution</span>    
                 </a>
             </li>
             <li class="sidebar-list"><a
@@ -46,7 +46,6 @@
                 <ul class="sidebar-submenu">
                     <li><a href="{{ route('user.group.details') }}">Details</a></li>
                     <li><a href="{{ route('user.group.member') }}">Members</a></li>
-                    <!-- <li><a href="">Bid Proposals</a></li> -->
                 </ul>
             </li>
 
