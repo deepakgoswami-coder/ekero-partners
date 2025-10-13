@@ -4,7 +4,7 @@
     <div class="navbar-header">
         <ul class="nav navbar-nav flex-row">
             <li class="nav-item ms-3 me-auto">
-                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                <a class="navbar-brand" href="{{ route('leader.dashboard') }}">
                     <img src="{{ asset('admin/icons/png.jpeg') }}" width="95px" height="60px" alt="">
                 </a>
             </li>
@@ -23,7 +23,7 @@
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="nav-item">
                 <a class="d-flex align-items-center {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                   href="{{ route('dashboard') }}">
+                   href="{{ route('leader.dashboard') }}">
                     <i data-feather="home"></i>
                     <span class="menu-title text-truncate">Dashboards</span>
                 </a>

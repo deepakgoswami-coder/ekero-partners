@@ -86,6 +86,10 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
+                                    @if ($link)
+                                    
+                                    <input type="hidden" name="link" value="{{ $link ?? '' }}">
+                                    @endif
 
                                     <!-- Email -->
                                     <div class="mb-1">

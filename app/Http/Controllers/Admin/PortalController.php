@@ -80,7 +80,8 @@ class PortalController extends Controller
                 'project_description' => 'Reserved group: '.$name,
                 'logo_path'           => $logoPath,
                 'video_path'          => $videoPath,
-                'is_active'           => true
+                'is_active'           => true,
+                'target_amount'           => $request->target_amount
             ]);
         }
 
