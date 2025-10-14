@@ -22,7 +22,7 @@ class LeaderController extends Controller
      */
     public function index()
     {
-        $leader = User::where('role', 2)->latest()->paginate(10);
+        $leader = User::with('group')->where('role', 2)->latest()->paginate(10);
         return view('admin.users.index', compact('leader'));
     }
 
