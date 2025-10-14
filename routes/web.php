@@ -111,7 +111,7 @@ Route::prefix('user')->group(function () {
       // contribution & payment
       Route::get('/my-contribution',[UserDhashBoardController::class,'myContribution'])->name('user.my.contribution');
       Route::post('/my-contribution/payment',[UserDhashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
-Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
+    Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
     Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
     Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
 
