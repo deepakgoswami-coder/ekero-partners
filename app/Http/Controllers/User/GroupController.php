@@ -10,7 +10,6 @@ use App\Models\GroupMember;
 use App\Models\PortalSet;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
