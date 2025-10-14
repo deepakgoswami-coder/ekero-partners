@@ -10,65 +10,89 @@
         <div class="content-header row"></div>
         <div class="content-body">
             <section id="dashboard-ecommerce">
+                 <div class="navbar navbar-light bg-white shadow-sm mb-2 p-2 rounded">
+            <div class="container-fluid d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-dark fw-bold">
+                    Group Name: {{ $group->name ?? 'Join a Group' }}
+                </h5>
+                <h6 class="mb-0  fw-bold">
+                    Date: {{ now()->format('M j, Y') }}
+                </h6>
+                <!-- Optional right-side content -->
+                <!-- <a href="#" class="btn btn-sm btn-primary">View Details</a> -->
+            </div>
+        </div>
+        @php
+                use Carbon\Carbon;
+                $startDate = Carbon::parse($portal->start_date);
+                $endDate = Carbon::parse($portal->end_date);
+                $weekNumber = weekCount($startDate);                
+        @endphp
                 <div class="row">
-                    <!-- Stat cards -->
+                    <!-- Stat cards  member -->
                     <div class="col-lg-3 col-sm-6">
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Astrologer</span>
+                                    <h3 class="fw-bolder mb-75">{{ $groupMembers->count() ?? 00 }}</h3>
+                                    <span>Total Member</span>
                                 </div>
                                 <div class="avatar bg-light-primary p-50">
-                                    <span class="avatar-content"><i data-feather="user"
+                                    <span class="avatar-content"><i data-feather="users"
                                             class="font-medium-4"></i></span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- week count -->
                     <div class="col-lg-3 col-sm-6">
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total User</span>
+                                    <h3 class="fw-bolder mb-75">{{ $weekNumber ?? 00 }}</h3>
+                                    <span>Current Week</span>
                                 </div>
                                 <div class="avatar bg-light-danger p-50">
-                                    <span class="avatar-content"><i data-feather="user-plus"
+                                    <span class="avatar-content"><i data-feather="loader"
                                             class="font-medium-4"></i></span>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- start date  -->
                     <div class="col-lg-3 col-sm-6">
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Blog</span>
+                                    <h3 class="fw-bolder mb-75">{{ $startDate->format('M j, Y') ?? 0000-00-00 }}</h3>
+                                    <span>Start Date</span>
                                 </div>
-                                <div class="avatar bg-light-success p-50">
-                                    <span class="avatar-content"><i data-feather="user-check"
+                                <div class="avatar bg-light-danger p-50">
+                                    <span class="avatar-content"><i data-feather="calendar"
                                             class="font-medium-4"></i></span>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- end date -->
                     <div class="col-lg-3 col-sm-6">
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total News</span>
+                                    <h3 class="fw-bolder mb-75">{{ $endDate->format('M j, Y') ?? 0000-00-00 }}</h3>
+                                    <span>End Date</span>
                                 </div>
-                                <div class="avatar bg-light-warning p-50">
-                                    <span class="avatar-content"><i data-feather="user-x"
+                                <div class="avatar bg-light-danger p-50">
+                                    <span class="avatar-content"><i data-feather="calendar"
                                             class="font-medium-4"></i></span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    
 
                 <!-- Chart -->
                 <div class="row">
@@ -105,7 +129,7 @@
                     </div>
                 </div>
                 <!-- Table Data -->
-                <div class="row mt-4">
+                <!-- <div class="row mt-4">
                     <div class="col-md-12">
                         <div class="card w-100">
                             <h5 class="card-header">E Books</h5>
@@ -127,7 +151,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
             </section>
         </div>
@@ -150,78 +174,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    if (feather) {
-        feather.replace({
-            width: 14,
-            height: 14
-        });
-    }
-
-    const ctx = document.getElementById('shipmentsChart').getContext('2d');
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul','Aug','Sept','Oct','Nov','Dec'],
-            datasets: [{
-                label: 'Shipments',
-                data: 
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                borderRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: {
-                duration: 800,
-                easing: 'easeOutQuart'
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 500
-                    }
-                }
-            }
-        }
-    });
-});
 
 
-const ctxPie = document.getElementById('astrologerUserChart').getContext('2d');
-
-new Chart(ctxPie, {
-    type: 'pie',
-    data: {
-        labels: ['Astrologers', 'Users'],
-        datasets: [{
-            data: ,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.6)',
-                'rgba(54, 162, 235, 0.6)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'bottom'
-            }
-        }
-    }
-});
 </script>
 <script>
         $(window).on('load', function () {

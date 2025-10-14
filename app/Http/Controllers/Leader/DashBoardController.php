@@ -212,5 +212,5 @@ class DashBoardController extends Controller
 
         return redirect()->back(); // or return JSON if using AJAX
 
-}
+    }
 }

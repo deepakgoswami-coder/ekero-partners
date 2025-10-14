@@ -13,15 +13,39 @@ use App\Models\Leader;
 use App\Models\User;
 use App\Models\Contribution;
 use Carbon\Carbon;
+use App\Models\Notification;
 
 
 
 
 class DashBoardController extends Controller
 {
+
     public function dashboard(){
         $user = Auth::user();
-        return view("user.dashboard" , compact("user"));
+        $groupId = GroupMember::where('user_id',$user->id)->pluck('group_id');
+        $group = Group::where('id',$groupId)->first();
+        $groupMembers = GroupMember::where('group_id',$groupId)->get();
+        $portal = PortalSet::where('id', $group->portal_set_id)->first();
+        $leader = User::where('id', $group->leader_id)->first();
+        $contributions = Contribution::where('user_id', $user->id)->latest()->get();
+        $weeklyCommitment = GroupMember::where('user_id', $user->id)->first()->weekly_commitment;
+
+        // dd($group , $portal , $contributions , $weeklyCommitment);
+
+        return view("user.dashboard", compact('user',"group" , "portal", "leader" , "groupMembers" , "contributions",'weeklyCommitment'));
+
+    }
+
+    public function readAllNotification(Request $request){
+
+        Notification::where('receiver_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+
+        return redirect()->back(); // or return JSON if using AJAX
+
     }
 
     public function userProfile(Request $request){
@@ -67,10 +91,11 @@ class DashBoardController extends Controller
     }
 
     public function myContributionPay(Request $request) {
+        $user = Auth::User();
         $request->validate([
         'group_id' => 'required|exists:groups,id',
         'user_id' => 'required|exists:users,id',
-        'amount' => 'required|numeric|min:1',
+        'amount' => 'required|numeric|min:1',       
         'transaction_id' => 'required|string|max:255',
         'week_number' => 'required|integer|min:1',
         ]);
@@ -86,6 +111,14 @@ class DashBoardController extends Controller
         $contribution->status = 'pending'; // or 'completed' if you want default
         $contribution->payment_method = 'manual'; // or get from request if available
         $contribution->save();
+
+        $group = Group::where('id',$request->group_id)->first();
+
+         $this->createNotification(
+                "Amount for week no.".$request->week_number . " paid successfully.",
+                $user->id,
+                $user->id
+            );
 
         return redirect()->route('user.my.contribution')->with('success',"successfully contributed in group");
     }
