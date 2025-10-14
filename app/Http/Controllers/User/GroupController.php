@@ -39,12 +39,9 @@ class GroupController extends Controller
         return view('user.group.groupmember',compact('groupMembers'));
     }
 
-<<<<<<< HEAD
-    
-=======
-    public function groupDetails(){
-        return view('user.group.details');
-    }
+    // public function groupDetails(){
+    //     return view('user.group.details');
+    // }
    public function index(Group $group)
     {
         // check if user is member
@@ -52,7 +49,6 @@ class GroupController extends Controller
         if (!$isMember) {
             abort(403, 'You are not a member of this group');
         }
->>>>>>> b3b7202ae5678ca295570726d485f90f5a14a1b9
 
         return view('user.chat', compact('group'));
     }
