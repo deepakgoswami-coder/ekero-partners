@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Leader\AuthController as LeaderAuthController;
 use App\Http\Controllers\Leader\DashBoardController as LeaderDashBoardController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
-use App\Http\Controllers\User\DashBoardController as UserDhashBoardController;
+use App\Http\Controllers\User\DashBoardController as UserDashBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,9 +108,11 @@ Route::prefix('user')->group(function () {
     
     // middle ware applied routes for the user
     Route::middleware('user')->group(function () {
-      Route::get('/dashboard', [UserDhashBoardController::class, 'dashboard'])->name('user.dashboard');
-      Route::get('/profile', [UserDhashBoardController::class, 'userProfile'])->name('user.profile');
-      Route::post('/profile', [UserDhashBoardController::class, 'userUpdateProfile'])->name('user.update.profile');
+      Route::get('/dashboard', [UserDashBoardController::class, 'dashboard'])->name('user.dashboard');
+      Route::get('/profile', [UserDashBoardController::class, 'userProfile'])->name('user.profile');
+      Route::post('/profile', [UserDashBoardController::class, 'userUpdateProfile'])->name('user.update.profile');
+      Route::post('/read-all', [UserDashBoardController::class, 'readAllNotification'])->name('user.notifications.markAllRead');
+
 
       // Group & Details routes
       Route::get('/group', [GroupController::class, 'group'])->name('user.group');
@@ -119,8 +121,8 @@ Route::prefix('user')->group(function () {
       Route::get('/group-member', [GroupController::class,'groupMember'])->name('user.group.member');
 
       // contribution & payment
-      Route::get('/my-contribution',[UserDhashBoardController::class,'myContribution'])->name('user.my.contribution');
-      Route::post('/my-contribution/payment',[UserDhashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
+      Route::get('/my-contribution',[UserDashBoardController::class,'myContribution'])->name('user.my.contribution');
+      Route::post('/my-contribution/payment',[UserDashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
    
       // group char for user
       Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');

@@ -115,22 +115,66 @@
 
             <ul class="nav navbar-nav align-items-center ms-auto">
 
-  <div id="flash-message" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
+            <div id="flash-message" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>
 
-                <!-- <li class="nav-item dropdown dropdown-notification me-25"><a class="nav-link" href="#"
-                        data-bs-toggle="dropdown"><i class="ficon" data-feather="bell"></i><span
-                            class="badge rounded-pill bg-danger badge-up">5</span></a>
-                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end">
-                        <li class="dropdown-menu-header">
-                            <div class="dropdown-header d-flex">
-                                <h4 class="notification-title mb-0 me-auto">Notifications</h4>
-                                <div class="badge rounded-pill badge-light-primary">6 New</div>
-                            </div>
-                        </li>
+            <!-- NOTIFICATION START HERE  -->
+                @php
+                    $notifications = App\Models\Notification::where('is_read', 0)->where('receiver_id', auth()->user()->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                    $unreadCount = $notifications->where('is_read', 0)->count();
+                @endphp
 
+                <li class="nav-item dropdown dropdown-notification me-25">
+                    <a class="nav-link" href="#" data-bs-toggle="dropdown">
+                        <i class="ficon" data-feather="bell"></i>
+                        @if($unreadCount > 0)
+                            <span class="badge rounded-pill bg-danger badge-up">{{ $unreadCount }}</span>
+                        @endif
+                    </a>
 
+                    <ul class="dropdown-menu dropdown-menu-media dropdown-menu-end shadow-lg border-0 rounded-3 p-0 overflow-hidden" style="min-width: 340px;">
+    <!-- Header -->
+    <li class="dropdown-menu-header bg-light d-flex justify-content-between align-items-center py-1 px-1 border-bottom">
+        <h5 class="notification-title mb-0 fw-semibold text-dark">
+            <i class="bi bi-bell me-2 text-primary"></i> Notifications
+        </h5>
+
+        @if($unreadCount > 0)
+            <form action="{{ route('leader.notifications.markAllRead') }}" method="POST" class="m-0 p-0">
+                @csrf
+                <button type="submit" 
+                        class="btn btn-sm text-decoration-none text-primary fw-semibold px-2 py-1 rounded-pill hover:bg-primary-subtle transition-all">
+                    Mark all read
+                </button>
+            </form>
+        @endif
+    </li>
+
+                        @forelse($notifications as $notif)
+                            <li class="scrollable-container media-list">
+                                <a class="d-flex dropdown-item {{ $notif->is_read ? '' : 'fw-bold' }}"
+                                    href="{{ route('leader.member.details', $notif->user_id) }}">
+                                    <div class="me-1">
+                                        <div class="avatar bg-light-primary">
+                                            <i data-feather="bell" class="avatar-icon"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="media-heading">{{ $notif->title }}</h6>
+                                        <small class="notification-text">{{ $notif->created_at->diffForHumans() }}</small>
+                                    </div>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="dropdown-item text-center">
+                                No notifications
+                            </li>
+                        @endforelse
                     </ul>
-                </li> -->
+                </li>
+                
+                <!-- NOTIFICATION END HERE  -->
                 <li class="nav-item dropdown dropdown-user"><a class="nav-link dropdown-toggle dropdown-user-link"
                         id="dropdown-user" href="#" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
