@@ -80,5 +80,8 @@ class User extends Authenticatable
     {
         return $this->ledPortals()->where('is_active', true)->first();
     }
+    public function group(){
+        return $this->hasOne(Group::class,'leader_id');
+    }
 
 }

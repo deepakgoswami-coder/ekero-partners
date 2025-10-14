@@ -17,6 +17,9 @@ return new class extends Migration {
             $table->decimal('weekly_commitment', 10, 2); // Amount user commits to pay weekly
             $table->decimal('total_contributed', 10, 2)->default(0);
             $table->decimal('group_sare', 10, 2)->default(0);
+            $table->boolean('has_recived')->default(false);
+            $table->decimal('recived_amount', 10, 2)->default(0);
+            $table->date('recived_date')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

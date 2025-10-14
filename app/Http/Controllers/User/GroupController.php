@@ -82,5 +82,10 @@ class GroupController extends Controller
         $chats = $group->chats()->with('user')->take(50)->get();
         return response()->json($chats);
     }
+     public function logout()
+    {
+        Auth::logout();
+        return redirect('/user/login');
+    }
 
 }

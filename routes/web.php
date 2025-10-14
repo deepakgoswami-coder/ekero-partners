@@ -46,6 +46,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
   Route::post('/leader/toggle-status', [LeaderController::class, 'toggleStatus'])->name('leader.toggle_user_status');
   Route::post('/leader/toggle-statuss', [MemberController::class, 'toggleStatus'])->name('member.toggle_user_status');
   Route::post('/view-all/notification', [MemberController::class, 'viewAllNotification'])->name('notifications.markAllRead');
+  Route::get('/contribution/list', [MemberController::class, 'contributionList'])->name('contribution.list');
+  Route::get('/contribution-list/{id}', [MemberController::class, 'contributionListByID'])->name('contribution.listt');
+  Route::post('/contribution/status', [MemberController::class, 'contributionStatus'])->name('contribution.status');
+  Route::post('/proceed/payment', [MemberController::class, 'proceedPayment'])->name('proceed.payment');
 });
 
 // All routes for the leader(role - 2) -------------------------------------------------------------
@@ -77,6 +81,12 @@ Route::prefix('leader')->group(function () {
     Route::put('/group/update/{id}', [LeaderDashBoardController::class, 'updateGroup'])->name('leader.groups.update');
     Route::get('/contribution', [LeaderDashBoardController::class, 'contribution'])->name('leader.contribution');
     Route::post('/real-all', [LeaderDashBoardController::class, 'readAllNotification'])->name('leader.notifications.markAllRead');
+  Route::get('/contribution/list/{id}', [LeaderDashBoardController::class, 'contributionList'])->name('leader.contribution.list');
+  Route::post('/contribution/status', [MemberController::class, 'contributionStatus'])->name('leader.contribution.status');
+  Route::get('/logout', [MemberController::class, 'logout'])->name('leader.logout');
+
+
+
 
 
   });
@@ -116,6 +126,7 @@ Route::prefix('user')->group(function () {
       Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
       Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
       Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
+  Route::get('/logout', [GroupController::class, 'logout'])->name('user.logout');
 
 
   });

@@ -174,7 +174,7 @@
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user"><a
                             class="dropdown-item" href="{{ route('leader.update.profile') }}"><i class="me-50"
                                 data-feather="user"></i>
-                            Profile</a><a class="dropdown-item" href="{{ route('logout') }}"><i class="me-50"
+                            Profile</a><a class="dropdown-item" href="{{ route('leader.logout') }}"><i class="me-50"
                                 data-feather="power"></i> Logout</a>
                     </div>
                 </li>

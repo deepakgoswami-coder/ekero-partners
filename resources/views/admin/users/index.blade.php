@@ -50,6 +50,7 @@
                                             <tr>
                                                 <th>Sr No.</th>
                                                 <th>Name</th>
+                                                <th>Group Name</th>
                                                 <th>Email</th>
                                                 <th>phone</th>
                                                 <th>Created At</th>
@@ -62,6 +63,7 @@
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
                                                     <td><a href="{{route( 'user.group.link',$val->id) }}">{{ $val->name ?? '' }}</a></td>
+                                                    <td><a href="{{route( 'contribution.listt',$val->group->id) }}">{{ $val->group->name ?? '' }}</a></td>
                                                     <td>{{ $val->email ?? '' }}</td>
                                                     <td>{{ $val->phone ?? '' }}</td>
                                                     <td>{{ $val->created_at ?? '' }}</td>

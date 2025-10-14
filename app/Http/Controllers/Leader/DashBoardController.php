@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Leader;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contribution;
 use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\Notification;
@@ -17,7 +18,12 @@ class DashBoardController extends Controller
 
     public function dashboard()
     {
-        return view("leader.dashboard");
+        $portalSet = PortalSet::where('is_active',1)->first();
+        $group = Group::where('leader_id',auth()->user()->id)->first();
+        $groupMember = GroupMember::where('group_id',$group->id)->count();
+        $contribution = Contribution::whereIn('group_id',$group)->sum('amount');
+ 
+        return view("leader.dashboard",compact('portalSet','contribution','groupMember'));
     }
     public function group()
     {
@@ -147,62 +153,9 @@ class DashBoardController extends Controller
     }
 
     public function contribution()
-    {
-
-        $portal = auth()->user()->ledPortals()->first();
-        $currentWeek = ceil((now()->diffInDays($portal->start_date)) / 7);
-        $currentWeek = min($currentWeek, 52);
-        // Calculate totals
-        $totalCollected = $portal->contributions()
-            ->where('status', 'completed')
-            ->sum('amount');
-
-        $thisWeekTotal = $portal->contributions()
-            ->where('week_number', $currentWeek)
-            ->where('status', 'completed')
-            ->sum('amount');
-
-        $totalMembers = $portal->members()->count();
-        $paidThisWeek = $portal->contributions()
-            ->where('week_number', $currentWeek)
-            ->where('status', 'completed')
-            ->distinct('user_id')
-            ->count('user_id');
-        // Weekly breakdown
-        $weeklyData = [];
-        for ($week = 1; $week <= $currentWeek; $week++) {
-            $weekTotal = $portal->contributions()
-                ->where('week_number', $week)
-                ->where('status', 'completed')
-                ->sum('amount');
-
-            $weeklyData[$week] = [
-                'total' => $weekTotal,
-                'target' => $portal->target_amount,
-                'progress' => $weekTotal > 0 ? ($weekTotal / $portal->target_amount) * 100 : 0,
-                'status' => $weekTotal >= $portal->target_amount ? 'completed' : 'pending'
-            ];
-        }
-
-        // Recent contributions
-        $recentContributions = $portal->contributions()
-            ->with('user')
-            ->where('status', 'completed')
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-        return view('leader.contribution.index', compact(
-            'portal',
-            'currentWeek',
-            'totalCollected',
-            'thisWeekTotal',
-            'totalMembers',
-            'paidThisWeek',
-            'weeklyData',
-            'recentContributions'
-        ));
-
+    {        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
+        $member = User::where('role', 3)->latest()->get();
+        return view('leader.contribution.index',compact('groups','member'));
     }
     public function readAllNotification(Request $request){
 
@@ -213,4 +166,24 @@ class DashBoardController extends Controller
         return redirect()->back(); // or return JSON if using AJAX
 
 }
+
+    public function contributionList($id){
+
+    
+     $contribution = Contribution::with('group', 'user')->where('group_id',$id)->latest()->paginate(10)->through(function ($data) {
+        $contr = GroupMember::where('group_id', $data->group_id)
+            ->where('user_id', $data->user_id)
+            ->first();
+
+        $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
+        return $data;
+    });
+        return view('leader.contribution.list', compact('contribution'));
+}
+ public function contributionStatus(Request $request){
+        $contribution = Contribution::find($request->id);
+        $contribution->status = $request->status;
+        $contribution->save();
+        return response()->json($contribution->status);
+    }
 }
