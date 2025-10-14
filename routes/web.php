@@ -85,7 +85,7 @@ Route::prefix('leader')->group(function () {
 
 // All routes for the user(role - 3) -------------------------------------------------
 Route::prefix('user')->group(function () {
-  // register and login Routes for user
+    // register and login Routes for user
     Route::get('/register', [UserAuthController::class, 'register'])->name('user.register');
     Route::post('/register', [UserAuthController::class, 'registerStore'])->name('user.store');
     Route::post('/send-otp', [UserAuthController::class, 'sendOtp'])->name('user.send.otp');
@@ -111,11 +111,13 @@ Route::prefix('user')->group(function () {
       // contribution & payment
       Route::get('/my-contribution',[UserDhashBoardController::class,'myContribution'])->name('user.my.contribution');
       Route::post('/my-contribution/payment',[UserDhashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
-Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
-    Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
-    Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
+   
+      // group char for user
+      Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
+      Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
+      Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
 
 
   });
 
-});
+}); 

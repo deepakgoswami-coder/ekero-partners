@@ -12,6 +12,8 @@ use App\Models\PortalSet;
 use App\Models\Leader;
 use App\Models\User;
 use App\Models\Contribution;
+use Carbon\Carbon;
+
 
 
 
@@ -65,7 +67,27 @@ class DashBoardController extends Controller
     }
 
     public function myContributionPay(Request $request) {
-        dd($request->all());
+        $request->validate([
+        'group_id' => 'required|exists:groups,id',
+        'user_id' => 'required|exists:users,id',
+        'amount' => 'required|numeric|min:1',
+        'transaction_id' => 'required|string|max:255',
+        'week_number' => 'required|integer|min:1',
+        ]);
+
+         // ✅ Create and save contribution
+        $contribution = new Contribution();
+        $contribution->group_id = $request->group_id;
+        $contribution->user_id = $request->user_id;
+        $contribution->week_number = $request->week_number;
+        $contribution->amount = $request->amount;
+        $contribution->transaction_id = $request->transaction_id;
+        $contribution->contribution_date = Carbon::now(); // current date
+        $contribution->status = 'pending'; // or 'completed' if you want default
+        $contribution->payment_method = 'manual'; // or get from request if available
+        $contribution->save();
+
+        return redirect()->route('user.my.contribution')->with('success',"successfully contributed in group");
     }
 
         
