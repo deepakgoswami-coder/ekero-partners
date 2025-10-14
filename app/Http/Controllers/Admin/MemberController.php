@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLeaderRequest;
+use App\Models\Contribution;
 use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\Notification;
@@ -140,5 +141,50 @@ class MemberController extends Controller
             ->update(['is_read' => true]);
 
         return redirect()->back(); // or return JSON if using AJAX
+    }
+    public function contributionList(){
+        $contribution = Contribution::with('group', 'user')->latest()->paginate(10)->through(function ($data) {
+        $contr = GroupMember::where('group_id', $data->group_id)
+            ->where('user_id', $data->user_id)
+            ->first();
+
+        $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
+        return $data;
+    });
+
+        return view('admin.contribution.list', compact('contribution'));
+
+    }
+    public function contributionListByID($id){
+         $contribution = Contribution::with('group', 'user')->where('group_id',$id)->latest()->paginate(10)->through(function ($data) {
+        $contr = GroupMember::where('group_id', $data->group_id)
+            ->where('user_id', $data->user_id)
+            ->first();
+
+        $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
+        return $data;
+    });
+        return view('admin.contribution.list', compact('contribution'));
+
+    }
+    public function contributionStatus(Request $request){
+        $contribution = Contribution::find($request->id);
+        $contribution->status = $request->status;
+        $contribution->save();
+        return response()->json($contribution->status);
+    }
+    public function proceedPayment(Request $request){
+        $groupMember = GroupMember::where('user_id',$request->user_id)->where('group_id',$request->group_id)->first();
+        $groupMember->has_recived = true;
+        $groupMember->recived_amount = $request->amount;
+        $groupMember->recived_date = date('Y-m-d');
+        $groupMember->save();
+        return redirect()->back()->with('success', 'Member payout successfully');
+
+    }
+     public function logout()
+    {
+        Auth::logout();
+        return redirect('/leader/login');
     }
 }

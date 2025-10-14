@@ -49,7 +49,6 @@
                                             <th>Number</th>
                                             <th>Email</th>
                                             <th>Weekly Contribution</th>
-                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -61,40 +60,6 @@
                                                 <td>{{ $val->member->email ?? '' }}</td>
                                                 <td>
                                                    {{ $val->weekly_commitment ?? '' }}
-                                                </td>
-                                                <td>
-                                                    <!-- Payout Button -->
-                                                    <button type="button" class="btn btn-{{ $val->has_recived != 1 ? 'success' : 'secondary' }}" @if($val->has_recived != 1) data-bs-toggle="modal" data-bs-target="#payoutModal{{ $val->id }}" @endif>
-    Payout
-</button>
-
-<!-- Payout Modal -->
-<div class="modal fade" id="payoutModal{{ $val->id }}" tabindex="-1" aria-labelledby="payoutModalLabel{{ $val->id }}" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="payoutModalLabel{{ $val->id }}">Payout</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form action="{{ route('proceed.payment') }}" method="POST">
-        @csrf
-        <div class="modal-body">
-          <div class="mb-3">
-            <input type="hidden" name="group_id" value="{{ $val->group_id }}">
-            <input type="hidden" name="user_id" value="{{ $val->user_id }}">
-            <label for="amount{{ $val->id }}" class="form-label">Amount</label>
-            <input type="number" required class="form-control" name="amount" id="amount{{ $val->id }}" value="{{ $val->amountt ?? 0 }}" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-success">Pay</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
                                                 </td>
                                             </tr>
                                             <div class="modal fade" id="addNewCard{{ $val->id }}" tabindex="-1"

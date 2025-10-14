@@ -16,8 +16,8 @@
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Ports Set</span>
+                                    <h3 class="fw-bolder mb-75">{{ $groupMember ?? '' }}</h3>
+                                    <span>Group Member</span>
                                 </div>
                                 <div class="avatar bg-light-primary p-50">
                                     <span class="avatar-content"><i data-feather="user"
@@ -30,8 +30,8 @@
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Portal</span>
+                                    <h3 class="fw-bolder mb-75">{{ $contribution ?? '' }}</h3>
+                                    <span>Contribution</span>
                                 </div>
                                 <div class="avatar bg-light-danger p-50">
                                     <span class="avatar-content"><i data-feather="user-plus"
@@ -44,8 +44,8 @@
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Leader</span>
+                                    <h3 class="fw-bolder mb-75">{{ $portalSet->total_portals ?? '' }}</h3>
+                                    <span>Total Week</span>
                                 </div>
                                 <div class="avatar bg-light-success p-50">
                                     <span class="avatar-content"><i data-feather="user-check"
@@ -58,8 +58,10 @@
                         <div class="card w-100">
                             <div class="card-body d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h3 class="fw-bolder mb-75"></h3>
-                                    <span>Total Member</span>
+                                                                   <h3 class="fw-bolder mb-75">
+    {{ \Carbon\Carbon::parse($portalSet->end_date)->format('M j, Y') ?? '0000-00-00' }}
+</h3>
+                                    <span>End Date</span>
                                 </div>
                                 <div class="avatar bg-light-warning p-50">
                                     <span class="avatar-content"><i data-feather="user-x"
