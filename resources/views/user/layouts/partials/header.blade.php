@@ -278,7 +278,7 @@
                             <span>Profile</span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ route('logout') }}">
+                        <a class="dropdown-item" href="{{ route('user.logout') }}">
                             <i class="me-50" data-feather="power"></i>
                             <span>Logout</span>
                         </a>
