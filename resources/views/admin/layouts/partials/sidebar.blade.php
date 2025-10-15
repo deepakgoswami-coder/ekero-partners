@@ -25,7 +25,7 @@ ease;
             <li class="nav-item  me-auto">
                 <a class="navbar-brand" href="{{ route('dashboard') }}">
                     <div class="brand-logo">
-                        <img src="{{ asset('admin/icons/png.jpeg') }}" alt="Ekero Partners" class="brand-image">
+                        <img src="{{ asset('admin/icons/png.jpeg') }}" alt="Ekero Partners" class="brand-image ">
                         <span class="brand-text">Ekero Partners</span>
                     </div>
                 </a>

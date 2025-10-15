@@ -130,7 +130,7 @@ Route::prefix('user')->group(function () {
       Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');
       Route::post('groups/{group}/chat', [GroupController::class, 'store'])->name('groups.chat.store');
       Route::get('groups/{group}/chat/messages', [GroupController::class, 'messages'])->name('groups.chat.messages');
-  Route::get('/logout', [GroupController::class, 'logout'])->name('user.logout');
+      Route::get('/logout', [GroupController::class, 'logout'])->name('user.logout');
 
 
   });

@@ -169,6 +169,10 @@
     <div class="content-wrapper container-xxl p-0">
         <div class="content-header row"></div>
         <div class="content-body">
+            @php
+                $currentWeek  = WeekCount($portal->start_date);
+            @endphp
+
 
             <!-- Progress Section -->
             <div class="progress-section">
@@ -225,7 +229,7 @@
                                         @csrf
                                         <input type="hidden" name="group_id" value="{{$group->id}}">
                                         <input type="hidden" name="user_id" value="{{$user->id}}">
-                                        <input type="hidden" name="amount" value="{{ $weeklyCommitment }}">
+                                        <input type="hidden" name="amount" value="123">
                                         <input type="hidden" name="transaction_id" value="1123456">
                                         <input type="hidden" name="week_number" value="{{ $currentWeek }}">
                                         <button type="submit" class="pay-button text-white">
@@ -238,6 +242,21 @@
                         </div>
                     </div>
                 </div>
+                @php
+                use Carbon\Carbon;
+
+// Example
+$start = Carbon::parse($portal->start_date)->startOfDay();
+$end   = Carbon::parse($portal->end_date)->startOfDay();
+
+// Difference in days
+$diffDays = $start->diffInDays($end);
+
+// Total weeks (rounded up)
+$totalWeeks = ceil(($diffDays + 1) / 7);
+
+
+                @endphp
                 <div class="col-md-4">
                     <div class="card dashboard-card">
                         <div class="card-header-custom">
@@ -254,7 +273,7 @@
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Total Weeks</div>
-                                <div class="info-value">{{ $numberOfWeeks }} Weeks</div>
+                                <div class="info-value">{{ $totalWeeks }} Weeks</div>
                             </div>
                         </div>
                     </div>
@@ -316,7 +335,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    <div class="stats-value">${{ number_format($group->target_amount * $numberOfWeeks, 2) }}</div>
+                                    <div class="stats-value">${{ number_format($group->target_amount * $totalWeeks, 2) }}</div>
                                     <div class="stats-label">Total Target</div>
                                 </div>
                                 <div class="stats-icon bg-light-warning">
@@ -377,7 +396,7 @@
                             </div>
                             <div class="info-item">
                                 <div class="info-label">Weeks Remaining</div>
-                                <div class="info-value">{{ $numberOfWeeks - $currentWeek }} Weeks</div>
+                                <div class="info-value">{{ $totalWeeks - $currentWeek }} Weeks</div>
                             </div>
                         </div>
                     </div>
@@ -403,7 +422,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($contributions as $index => $contribution)
+                                @foreLSE ($contributions as $index => $contribution)
                                     <tr>
                                         <td class="fw-semibold">{{ $index + 1 }}</td>
                                         <td>
