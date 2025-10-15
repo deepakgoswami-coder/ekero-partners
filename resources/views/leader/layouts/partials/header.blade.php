@@ -7,7 +7,7 @@
     <meta name="description" content="Ekero Partners - Group Investment Management System">
     <meta name="keywords" content="investment, groups, management, portal, admin">
     <meta name="author" content="Ekero Partners">
-    <title>Ekero Partners - Admin Dashboard</title>
+    <title>Ekero Partners - Leader Dashboard</title>
     
     <!-- Favicon -->
     <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
