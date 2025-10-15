@@ -123,6 +123,8 @@ Route::prefix('user')->group(function () {
       // contribution & payment
       Route::get('/my-contribution',[UserDashBoardController::class,'myContribution'])->name('user.my.contribution');
       Route::post('/my-contribution/payment',[UserDashBoardController::class,'myContributionPay'])->name('user.my.contribution.pay');
+      Route::get('/payment-reciept',[UserDashBoardController::class,'PaymentRecieptDownload'])->name('user.payment.reciept');
+
    
       // group char for user
       Route::get('groups/{group}/chat', [GroupController::class, 'index'])->name('groups.chat');

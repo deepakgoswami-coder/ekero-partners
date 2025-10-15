@@ -141,7 +141,7 @@
         </h5>
 
         @if($unreadCount > 0)
-            <form action="{{ route('leader.notifications.markAllRead') }}" method="POST" class="m-0 p-0">
+            <form action="{{ route('user.notifications.markAllRead') }}" method="POST" class="m-0 p-0">
                 @csrf
                 <button type="submit" 
                         class="btn btn-sm text-decoration-none text-primary fw-semibold px-2 py-1 rounded-pill hover:bg-primary-subtle transition-all">

@@ -34,12 +34,33 @@
 
             <li class="nav-item">
                 <a class="d-flex align-items-center "
-                    href="{{ route ('user.my.contribution')}}">
-                    <i data-feather="award"></i>
-                    <span class="menu-title text-truncate">My Contribution</span>    
-                </a>
-            </li>
-            <li class="sidebar-list"><a
+                href="{{ route ('user.group.details')}}">
+                <i data-feather="award"></i>
+                <span class="menu-title text-truncate">Group Details</span>    
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="d-flex align-items-center "
+            href="{{ route ('user.group.member')}}">
+            <i data-feather="users"></i>
+            <span class="menu-title text-truncate">Group Members</span>    
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="d-flex align-items-center "
+            href="{{ route ('user.my.contribution')}}">
+            <i data-feather="dollar-sign"></i>
+            <span class="menu-title text-truncate">My Contribution</span>    
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="d-flex align-items-center "
+            href="{{ route ('user.payment.reciept')}}">
+            <i data-feather="file-text"></i>
+            <span class="menu-title text-truncate">Payment & Reciept</span>    
+        </a>
+    </li>
+    <!-- <li class="sidebar-list"><a
                 class="sidebar-link sidebar-title" href="#">
                 <i data-feather="users"></i> {{-- Group icon --}}
                 <span>My Group</span></a>
@@ -47,7 +68,7 @@
                     <li><a href="{{ route('user.group.details') }}">Details</a></li>
                     <li><a href="{{ route('user.group.member') }}">Members</a></li>
                 </ul>
-            </li>
+            </li> -->
 
         </ul>
     </div>
