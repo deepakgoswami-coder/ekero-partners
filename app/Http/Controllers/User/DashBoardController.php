@@ -123,6 +123,35 @@ class DashBoardController extends Controller
         return redirect()->route('user.my.contribution')->with('success',"successfully contributed in group");
     }
 
+    public function PaymentRecieptDownload()
+    {
+        $user = auth()->user();
+        $contributions = Contribution::with('group')
+            ->where('user_id', $user->id)
+            ->orderBy('week_number', 'desc')
+            ->get();
+    
+        // Calculate statistics
+        $totalPayments = $contributions->count();
+        $totalAmount = $contributions->sum('amount');
+        $completedPayments = $contributions->where('status', 'completed')->count();
+        // Get user's weekly commitment from group_members table
+        $weeklyCommitment = GroupMember::where('user_id', $user->id)
+            ->value('weekly_commitment') ?? 0;
+    
+        // Calculate current week (you might have your own logic for this)
+        $currentWeek = 1; // Replace with your week calculation
+    
+        return view('user.payment_reciepts', compact(
+            'contributions',
+            'totalPayments',
+            'totalAmount',
+            'completedPayments',
+            'weeklyCommitment',
+            'currentWeek'
+        ));
+    }
+
         
     
 

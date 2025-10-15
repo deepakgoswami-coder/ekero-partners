@@ -9,6 +9,7 @@ use App\Models\GroupChat;
 use App\Models\GroupMember;
 use App\Models\PortalSet;
 use App\Models\User;
+use App\Models\Contribution;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -29,7 +30,9 @@ class GroupController extends Controller
         $group = Group::where('id', $groupId)->first();
         $portal = PortalSet::where('id', $group->portal_set_id)->first();
         $leader = User::where('id', $group->leader_id)->first();
-        return view('user.group.details', compact("group", "portal", "leader", "groupMembers"));
+        $contributions = Contribution::where('user_id', $user->id)->latest()->get();
+        $weeklyCommitment = GroupMember::where('user_id', $user->id)->first()->weekly_commitment;
+        return view('user.group.details', compact("user","group", "portal", "leader", "groupMembers", "contributions"));
     }
 
     public function groupMember()
