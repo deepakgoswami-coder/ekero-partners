@@ -278,6 +278,10 @@
                             <span class="dropdown-subtitle">{{ auth()->user()->email }}</span>
                         </div>
                         <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="{{ route('leader.update.profile') }}">
+                            <i class="me-50" data-feather="user"></i>
+                            <span>Profile</span>
+                        </a>
                         <a class="dropdown-item" href="{{ route('logout') }}">
                             <i class="me-50" data-feather="power"></i>
                             <span>Logout</span>
