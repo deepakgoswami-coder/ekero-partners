@@ -32,9 +32,6 @@ class GroupController extends Controller
         return view('user.group.details', compact("group", "portal", "leader", "groupMembers"));
     }
 
-    
-
-
     public function groupMember()
     {
         $groupId = GroupMember::where('user_id', auth()->user()->id)->pluck('group_id');

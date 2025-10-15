@@ -153,20 +153,49 @@ class MemberController extends Controller
     });
 
         return view('admin.contribution.list', compact('contribution'));
-
+ 
     }
-    public function contributionListByID($id){
-         $contribution = Contribution::with('group', 'user')->where('group_id',$id)->latest()->paginate(10)->through(function ($data) {
-        $contr = GroupMember::where('group_id', $data->group_id)
-            ->where('user_id', $data->user_id)
-            ->first();
+    public function contributionListByID($id)
+{
+    $group = Group::withCount('members')->findOrFail($id);
+    
+    $contribution = Contribution::with(['group', 'user'])
+        ->where('group_id', $id)
+        ->latest()
+        ->paginate(10)
+        ->through(function ($data) {
+            $contr = GroupMember::where('group_id', $data->group_id)
+                ->where('user_id', $data->user_id)
+                ->first();
 
-        $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
-        return $data;
-    });
-        return view('admin.contribution.list', compact('contribution'));
+            $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
+            return $data;
+        });
 
-    }
+    // Calculate statistics
+    $totalContributions = Contribution::where('group_id', $id)->count();
+    $totalAmount = Contribution::where('group_id', $id)->where('status', 'completed')->sum('amount');
+    $completedContributions = Contribution::where('group_id', $id)->where('status', 'completed')->count();
+    $pendingContributions = Contribution::where('group_id', $id)->where('status', 'pending')->count();
+    
+    // Calculate progress percentage
+    $progressPercentage = $group->target_amount > 0 ? 
+        round(($group->current_amount / $group->target_amount) * 100, 2) : 0;
+
+    // Get current week (you might want to calculate this based on your logic)
+    $currentWeek = 1; // Replace with your week calculation logic
+
+    return view('admin.contribution.list', compact(
+        'contribution',
+        'group',
+        'totalContributions',
+        'totalAmount',
+        'completedContributions',
+        'pendingContributions',
+        'progressPercentage',
+        'currentWeek'
+    ));
+}
     public function contributionStatus(Request $request){
         $contribution = Contribution::find($request->id);
         $contribution->status = $request->status;
