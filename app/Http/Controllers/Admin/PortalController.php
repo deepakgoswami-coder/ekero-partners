@@ -40,7 +40,7 @@ class PortalController extends Controller
         if($portalSet){
             $group = Group::where('portal_set_id',$portalSet->id)->count();
             if ($group < 52) {
-            return redirect()->back()->with('error', 'Portal Set unable to create First fill all the leaders in group.');
+            return redirect()->back()->with('error', 'Previous portal is not full !');
                 
             }
         }

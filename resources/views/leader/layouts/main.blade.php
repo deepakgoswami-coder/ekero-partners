@@ -1,10 +1,10 @@
- @include('leader.layouts.partials.header')
+ @include('admin.layouts.partials.header')
 
     <!-- Main Menu -->
-    @include('leader.layouts.partials.sidebar')
+    @include('admin.layouts.partials.sidebar')
 
         @yield('content')
-    @include('leader.layouts.partials.footer')
+    @include('admin.layouts.partials.footer')
         @yield('script')
 </body>
 
