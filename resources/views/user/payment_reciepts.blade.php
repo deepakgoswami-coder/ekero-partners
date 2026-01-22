@@ -163,11 +163,16 @@
     .empty-state {
         text-align: center;
         padding: 40px 20px;
-        color: #a0aec0;
+        /* color: #a0aec0; */
+            display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     }
     .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 16px;
+        font-size: 2rem;
+        /* margin-bottom: 16px; */
         color: #cbd5e0;
     }
     .payment-summary-card {
@@ -234,6 +239,72 @@
         }
     }
 </style>
+<!-- style for the pop up delete once payment work -->
+<style>
+    .custom-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1050;
+    }
+
+    .custom-modal.show {
+        display: flex;
+    }
+
+    .custom-modal-content {
+        background: #fff;
+        width: 100%;
+        max-width: 420px;
+        padding: 30px 25px;
+        border-radius: 10px;
+        text-align: center;
+        position: relative;
+        animation: scaleIn 0.25s ease;
+    }
+
+    .modal-icon {
+        font-size: 42px;
+        color: #4f46e5;
+        margin-bottom: 12px;
+    }
+
+    .custom-modal-content h4 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .custom-modal-content p {
+        font-size: 15px;
+        color: #555;
+        margin-bottom: 20px;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        border: none;
+        background: transparent;
+        font-size: 22px;
+        cursor: pointer;
+        color: #888;
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0.95);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
 @section('content')
 <div class="app-content content">
     <div class="content-overlay"></div>
@@ -244,7 +315,7 @@
             <div class="payment-summary-card">
                 <div class="summary-content">
                     <div class="summary-text">
-                        <h3>My Payment History</h3>
+                        <h3 class="text-white">My Payment History</h3>
                         <p>Track all your contributions and payments in one place</p>
                     </div>
                     <div class="summary-stats">
@@ -287,7 +358,7 @@
             <!-- Payments Table -->
             <div class="payments-container">
                 <div class="table-header-custom">
-                    <h4><i class="bi bi-cash-coin me-2"></i>Payment History</h4>
+                    <h4 class="text-white"><i class="bi bi-cash-coin me-2"></i>Payment History</h4>
                 </div>
 
                 <div class="table-responsive">
@@ -366,9 +437,29 @@
                                             <i class="bi bi-cash-coin"></i>
                                             <h4>No Payments Found</h4>
                                             <p>You haven't made any payments yet.</p>
-                                            <button class="btn btn-primary mt-2">
-                                                <i class="bi bi-plus-circle me-1"></i> Make First Payment
-                                            </button>
+                                            <button class="btn btn-primary mt-2" onclick="openPaymentPopup()">
+    <i class="bi bi-plus-circle me-1"></i> Make First Payment
+</button>
+<div id="paymentPopup" class="custom-modal">
+    <div class="custom-modal-content">
+        <button class="close-btn" onclick="closePaymentPopup()">×</button>
+
+        <div class="modal-icon">
+            <i class="bi bi-info-circle"></i>
+        </div>
+
+        <h4>Service Not Available</h4>
+
+        <p>
+            The payment service is currently not available.
+            Our team is working on it and it will be available soon.
+            Thank you for your patience.
+        </p>
+
+        <button class="btn btn-primary" onclick="closePaymentPopup()">OK</button>
+    </div>
+</div>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -463,7 +554,9 @@ let currentPaymentId = null;
 document.addEventListener("DOMContentLoaded", function() {
     if (feather) feather.replace({ width: 14, height: 14 });
 });
-
+let contributionCount = @json($contributions->sum('amount'));
+let share = @json($share);
+let sharePrice = @json($portal->share_price ?? 0);
 function viewPaymentDetails(paymentId) {
     currentPaymentId = paymentId;
     // Here you would typically make an AJAX call to get payment details
@@ -500,6 +593,15 @@ function viewPaymentDetails(paymentId) {
                 </div>
                 <div class="mb-3">
                     <strong>Status:</strong> <span class="badge bg-success">Completed</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Total Contribution:</strong> <span class="">${contributionCount}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Weekly Share:</strong> <span class="">${share}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Share Price:</strong> <span class="">${sharePrice}</span>
                 </div>
             </div>
             <div class="col-md-6">
@@ -575,5 +677,15 @@ document.addEventListener('DOMContentLoaded', function() {
         row.style.animationDelay = `${index * 0.05}s`;
     });
 });
+</script>
+<!-- delete script if payment work -->
+ <script>
+function openPaymentPopup() {
+    document.getElementById('paymentPopup').classList.add('show');
+}
+
+function closePaymentPopup() {
+    document.getElementById('paymentPopup').classList.remove('show');
+}
 </script>
 @endsection

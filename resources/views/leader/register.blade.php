@@ -9,12 +9,21 @@
     <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Register Page - ekero - Bootstrap HTML admin template</title>
-    <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/icao/apple-icon-120.png')}}"> -->
-    <!-- <link rel="shortcut icon" type="image/x-icon" href="{{ asset('images/newlogo.png')}}">
+    <title>Ekero Partners</title>
+      
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16"  href="{{ asset('admin/icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32"  href="{{ asset('admin/icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/icons/favicon.png')}}">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180"  href="{{ asset('admin/icons/apple-touch-icon.png')}}" >
+
+    <meta name="theme-color" content="#4CAF50">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
-    <!-- BEGIN: Vendor CSS-->
+     <!-- BEGIN: Vendor CSS-->
     <link rel="stylesheet" type="text/css" href="{{ asset('admin/app-assets/vendors/css/vendors.min.css')}}">
     <!-- END: Vendor CSS-->
 
@@ -56,13 +65,22 @@
                      
                         <!-- Left Text-->
                         <div class="d-none d-lg-flex col-lg-6 align-items-center p-5">
-
-                            <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-                        <a class="brand-logo" href="index.html">
-                            <img src="{{ asset('images/newlogo.png') }}" alt="Ekero Logo" style="height: 120px; width:auto; position: static !important;">
-                        </a>
-                                <img class="img-fluid" src="{{ asset('admin/app-assets/images/pages/register-v2.svg')}}" alt="Register V2" /></div>
-                        </div>
+                            <div class="w-100 d-lg-flex flex-column  justify-content-left px-5">
+                                <div class="d-flex  align-items-baseline gap-2">
+                                        <a class="brand-logoo" href="{{ route('website.home', ['lang' => 'en']) }}">
+                                        <img src="{{ asset('images/ekeroLogo.png') }}" 
+                                            alt="Ekero Logo" 
+                                            style="height: 150px; width:auto; position: static !important;">
+                                    </a>
+                                    <p class="fw-bold" style="font-size:18px; color:#000;">Building Wealth Together</p>
+                                </div>
+                      
+                            <img class="img-fluid" 
+                            src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
+                            alt="Login V2"
+                            style="max-width: 85%; height: auto;">
+                    </div>
+                </div>
                         <!-- /Left Text-->
                         <!-- Register-->
                         <div class="d-flex col-lg-6 align-items-center auth-bg px-2 p-lg-5">
@@ -154,7 +172,7 @@
                                     <button class="btn btn-primary w-100" type="submit" tabindex="8" id="signup-btn" disabled>Sign Up</button>
                                 </form>
 
-                                <p class="text-center mt-2"><span>Already have an account?</span><a href="auth-login-cover.html"><span>&nbsp;Sign in instead</span></a></p>
+                                <p class="text-center mt-2"><span>Already have an account?</span><a href="{{ route('leader.login')}}"><span>&nbsp;Sign in instead</span></a></p>
                                 
                             </div>
                         </div>
@@ -184,7 +202,7 @@ $(document).ready(function() {
         $('#send-otp').prop('disabled', true).text('Sending...');
 
         $.ajax({
-            url: "{{ route('send.otp') }}",  // backend route
+            url: "{{ route('leader.send.otp') }}",  // backend route
             type: "POST",
             data: {
                 email: email,
@@ -232,7 +250,7 @@ $(document).ready(function() {
         $(this).prop('disabled', true).text('Verifying...');
 
         $.ajax({
-            url: "{{ route('verify.otp') }}",
+            url: "{{ route('leader.verify.otp') }}",
             type: "POST",
             data: {
                 email: email,
@@ -289,7 +307,7 @@ $(document).ready(function() {
     $(this).prop('disabled', true).text('Verifying...');
 
     $.ajax({
-        url: "{{ route('verify.otp') }}",
+        url: "{{ route('leader.verify.otp') }}",
         type: "POST",
         data: {
             email: email,

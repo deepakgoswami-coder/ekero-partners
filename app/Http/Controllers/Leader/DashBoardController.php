@@ -1,14 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Leader;
+use App\Models\CoachTask;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contribution;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\LeaderBankdetails;
 use App\Models\Notification;
 use App\Models\PortalSet;
 use App\Models\User;
+use App\Models\HelpSupport;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -18,18 +22,263 @@ class DashBoardController extends Controller
 
     public function dashboard()
     {
-        $portalSet = PortalSet::where('is_active',1)->first();
-        $group = Group::where('leader_id',auth()->user()->id)->first();
-        $groupMember = GroupMember::where('group_id',$group->id)->count();
-        $contribution = Contribution::whereIn('group_id',$group)->sum('amount');
- 
-        return view("leader.dashboard",compact('portalSet','contribution','groupMember'));
+        $leader = Auth::user();
+        $portalSet = PortalSet::where('isFull', 0)->first();
+        $group = Group::where('leader_id', auth()->user()->id)->first();
+                 // for help support teble 
+        $supportDetails = HelpSupport::first() ?? null;
+
+
+        if (!$group) {
+            $groupMember = 0;
+            $contribution = 0;
+            $weeklyContributions = [];
+            $memberDistribution = [];
+            $weekLabels = [];
+
+            return view("leader.dashboard", compact(
+                'leader',
+                'portalSet',
+                'contribution',
+                'groupMember',
+                'weeklyContributions',
+                'memberDistribution',
+                'weekLabels',
+                'supportDetails'
+            ));
+        }
+
+        $groupMember = GroupMember::where('group_id', $group->id)->count() ?? 0;
+        $contribution = Contribution::where('group_id', $group->id)->sum('amount') ?? 0;
+
+        // Contribution Trends Data (Last 7 weeks)
+        $weeklyContributions = [];
+        $weekLabels = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $weekStart = now()->subWeeks($i)->startOfWeek();
+            $weekEnd = now()->subWeeks($i)->endOfWeek();
+            $weekNumber = now()->subWeeks($i)->week;
+
+            $weekContribution = Contribution::where('group_id', $group->id)
+                ->where('status', 'completed')
+                ->whereBetween('contribution_date', [$weekStart, $weekEnd])
+                ->sum('amount');
+
+            $weeklyContributions[] = (float) $weekContribution;
+            $weekLabels[] = 'Week ' . $weekNumber;
+        }
+
+        // Member Distribution Data
+        $activeMembers = GroupMember::where('group_id', $group->id)
+            ->where('is_active', true)
+            ->count();
+
+        $pendingMembers = GroupMember::where('group_id', $group->id)
+            ->where('is_active', false)
+            ->count();
+
+        $completedMembers = GroupMember::where('group_id', $group->id)
+            ->where('has_recived', true)
+            ->count();
+
+        $memberDistribution = [
+            'active' => $activeMembers,
+            'pending' => $pendingMembers,
+            'completed' => $completedMembers
+        ];
+
+        // Additional stats for the dashboard
+        $totalTarget = $group->target_amount;
+        $completionPercentage = $totalTarget > 0 ? ($contribution / $totalTarget) * 100 : 0;
+        $weeksRemaining = $portalSet ? now()->diffInWeeks($portalSet->end_date) : 0;
+        
+
+        return view("leader.dashboard", compact(
+            'leader',
+            'portalSet',
+            'contribution',
+            'groupMember',
+            'group',
+            'weeklyContributions',
+            'memberDistribution',
+            'weekLabels',
+            'totalTarget',
+            'completionPercentage',
+            'weeksRemaining',
+            'supportDetails'
+        ));
+    }
+
+     public function coachChatList(Request $request)
+    {
+        $leaderId = auth()->id();
+
+        // 1. Un Coaches ki IDs nikalna jinse chat hui hai
+        $chatUserIds = \App\Models\ChatMessage::where('sender_id', $leaderId)
+            ->orWhere('receiver_id', $leaderId)
+            ->pluck('sender_id', 'receiver_id')
+            ->flatten()
+            ->unique()
+            ->filter(fn($id) => $id != $leaderId);
+
+        // 2. Wo coaches jinke assign_leader array mein ye leader_id ho OR jinse chat hui ho
+        $coaches = \App\Models\User::where('role', 4) // Role 1 = Coach
+            ->where(function($query) use ($leaderId, $chatUserIds) {
+                $query->whereJsonContains('assign_leader', (string)$leaderId)
+                    ->orWhereIn('id', $chatUserIds);
+            })
+            ->get();
+
+        // Agar AJAX request hai (Messages load karne ke liye)
+        if ($request->ajax() && $request->has('coach_id')) {
+            $messages = \App\Models\ChatMessage::where(function($q) use ($leaderId, $request) {
+                $q->where('sender_id', $leaderId)->where('receiver_id', $request->coach_id);
+            })->orWhere(function($q) use ($leaderId, $request) {
+                $q->where('sender_id', $request->coach_id)->where('receiver_id', $leaderId);
+            })->orderBy('created_at', 'asc')->get();
+
+            return response()->json(['messages' => $messages]);
+        }
+
+        return view('leader.chat.coach-list', compact('coaches'));
+    }
+
+    public function sendMessage(Request $request)
+    {
+        // Note: Yahan 'leader_id' actually receiver ki ID hai (is case mein Coach)
+        $receiverId = $request->leader_id; 
+        $senderId = auth()->id();
+
+        // 1. Validation
+        if (!$request->message && !$request->hasFile('files')) {
+            return response()->json(['error' => 'Empty message'], 400);
+        }
+
+        $messageText = $request->message;
+
+        // 2. Handle Files (Agar files hain toh multiple entries ya single handle karein)
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // 'chat_files' folder mein save hoga storage/app/public/chat_files
+                $path = $file->storeAs('chat_files', $fileName, 'public'); 
+
+                $fileType = $this->getFileType($file);
+
+                \App\Models\ChatMessage::create([
+                    'sender_id'   => $senderId,
+                    'receiver_id' => $receiverId,
+                    'chat'        => $messageText, // Pehli file ke saath message chala jayega
+                    'file'        => $path,
+                    'file_type'   => $fileType,
+                ]);
+                
+                $messageText = null; // Baaki files ke liye text null kar dein taaki repeat na ho
+            }
+        } else {
+            // Sirf text message
+            \App\Models\ChatMessage::create([
+                'sender_id'   => $senderId,
+                'receiver_id' => $receiverId,
+                'chat'        => $messageText,
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function calender()
+    {
+        // Sirf wahi tasks fetch karein jahan receiver current Leader hai
+        $tasks = CoachTask::with('sender') // 'sender' relationship (Coach) model mein honi chahiye
+            ->where('receiver_id', Auth::id()) 
+            ->get()
+            ->map(function($task) {
+                return [
+                    'id'    => $task->id,
+                    // Title mein Coach ka naam dikhayenge
+                    'title' => 'Coach: ' . ($task->sender ? $task->sender->name : 'Task'), 
+                    'start' => $task->task_date,
+                    'extendedProps' => [
+                        'comment' => $task->comments,
+                        'image'   => $task->image ? asset($task->image) : null,
+                        'coach_name' => $task->sender ? $task->sender->name : 'Unknown'
+                    ],
+                    'backgroundColor' => '#6a4ee9', // Leader theme color
+                    'borderColor'     => '#6a4ee9',
+                    'textColor'       => '#ffffff'
+                ];
+            });
+
+        return view('leader.calendar.index', compact('tasks'));
+    }
+
+    public function storeTask(Request $request)
+    {
+        $request->validate([
+            'leader_id' => 'required',
+            'date'      => 'required|date',
+            'comment'   => 'required',
+            'image'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        try {
+            $imagePath = null;
+            
+            if ($request->hasFile('image')) {
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('uploads/tasks'), $imageName);
+                $imagePath = 'uploads/tasks/' . $imageName;
+            }
+
+            CoachTask::create([
+                'sender_id'   => Auth::id(),
+                'receiver_id' => $request->leader_id,
+                'task_date'   => $request->date,
+                'comments'    => $request->comment,
+                'image'       => $imagePath,
+            ]);
+
+            // Success hone par is route par redirect karein
+            return redirect()->route('leader.calender.index')->with('success', 'Task assigned successfully!');
+
+        } catch (\Exception $e) {
+            // Failed hone par error message ke saath wapas bhejein
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+      private function getFileType($file)
+    {
+        $mime = $file->getMimeType();
+        if (str_contains($mime, 'image')) return 'image';
+        if (str_contains($mime, 'video')) return 'video';
+        if (str_contains($mime, 'audio')) return 'audio';
+        return 'file';
+    }
+    public function xyz()
+    {
+
+        $groups = PortalSet::with('groups')->get();
+
+        dd($groups);
+
     }
     public function group()
     {
-        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
+        $groups = Group::where('leader_id', auth()->user()->id)->first();
+        // dd($groups);
         $member = User::where('role', 3)->latest()->get();
-        return view('leader.group.index', compact('groups', 'member'));
+        $portalSet = PortalSet::where('id', $groups->portal_set_id)->first();
+
+        // other needed variables
+
+        $portalGroupCount = Group::where('portal_set_id', $groups->portal_set_id)->count();
+
+        // dd($groups->where('is_active',true AND 'portal_set_id', $groups->portal_set_id)->count());
+
+
+        return view('leader.group.index', compact('groups', 'member', 'portalSet', 'portalGroupCount'));
     }
     public function groupCreate()
     {
@@ -50,7 +299,7 @@ class DashBoardController extends Controller
         $groupMember->user_id = $request->user_id;
         $groupMember->group_id = $request->group_id;
         $groupMember->weekly_commitment = $request->weekly_commitment;
-        $shares = ($group->target_amount)/($request->weekly_commitment);
+        $shares = ($group->target_amount) / ($request->weekly_commitment);
         $groupMember->group_sare = $shares;
         $groupMember->save();
         return redirect()->back()->with('success', 'Member  assign successfully');
@@ -147,43 +396,119 @@ class DashBoardController extends Controller
         $group->project_description = $request->project_description;
         $group->project_name = $request->project_name;
         $group->save();
-        return redirect()->back()->with('success', 'Group Updated successsfully');
-
-
+        return redirect()->route('leader.group')->with('success', 'Group Updated successsfully');
     }
 
     public function contribution()
-    {        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
+    {
+        $groups = Group::where('leader_id', auth()->user()->id)->latest()->paginate(10);
         $member = User::where('role', 3)->latest()->get();
-        return view('leader.contribution.index',compact('groups','member'));
+        return view('leader.contribution.index', compact('groups', 'member'));
     }
-    public function readAllNotification(Request $request){
+    public function readAllNotification(Request $request)
+    {
 
-      Notification::where('receiver_id', Auth::id())
-                    ->where('is_read', false)
-                    ->update(['is_read' => true]);
+        Notification::where('receiver_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
 
         return redirect()->back(); // or return JSON if using AJAX
 
-}
+    }
 
-    public function contributionList($id){
+    public function contributionList($id)
+    {
 
-    
-     $contribution = Contribution::with('group', 'user')->where('group_id',$id)->latest()->paginate(10)->through(function ($data) {
-        $contr = GroupMember::where('group_id', $data->group_id)
-            ->where('user_id', $data->user_id)
-            ->first();
 
-        $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
-        return $data;
-    });
+        $contribution = Contribution::with('group', 'user')->where('group_id', $id)->latest()->paginate(10)->through(function ($data) {
+            $contr = GroupMember::where('group_id', $data->group_id)
+                ->where('user_id', $data->user_id)
+                ->first();
+
+            $data->contributionamount = $contr ? $contr->weekly_commitment : 0;
+            return $data;
+        });
         return view('leader.contribution.list', compact('contribution'));
-}
- public function contributionStatus(Request $request){
+    }
+    public function contributionStatus(Request $request)
+    {
         $contribution = Contribution::find($request->id);
         $contribution->status = $request->status;
         $contribution->save();
         return response()->json($contribution->status);
     }
+
+    public function bankDetails()
+    {
+        $bankDetails = LeaderBankdetails::where('leader_id', auth()->id())->first();
+        return view('leader.bank-details', compact('bankDetails'));
+    }
+
+    public function bankDetailsStore(Request $request) {
+        $leader = Auth::user();
+        $group = Group::where('leader_id', $leader->id)->first();
+
+        $request->validate([
+        'bank_holder_name' => 'required|string|max:255',
+        'bank_name'        => 'required|string|max:255',
+        'bank_address'     => 'nullable|string|max:500',
+        ]);
+
+        LeaderBankdetails::updateOrCreate([
+        'leader_id'          => $leader->id,
+        'bank_holder_name' => $request->bank_holder_name,
+        'bank_name'        => $request->bank_name,
+        'bank_address'     => $request->bank_address,
+        'account_number'   => $request->account_number,
+        'routing_number'   => $request->routing_number,
+        'swift_code'       => $request->swift_code,
+        'account_type'     => $request->account_type,
+        'payment_details'  => $request->payment_details,
+        'portal_set_id' => $group->portal_set_id,
+        'group_id' => $group->id
+        ]);
+
+        return redirect()->back()->with('success', 'Bank details saved successfully!');
+        
+
+    }
+
+    public function myUserPortal() {
+
+        $leader = Auth::user();
+        $groupMember = GroupMember::where('user_id', $leader->id)->first();
+        $group = Group::where('leader_id', $leader->id)->first();
+
+        $portalSet = PortalSet::where('id', $group->portal_set_id)->first();
+
+        if($groupMember){
+
+            return redirect()->route('user.dashboard');
+        }
+        // making him the group member
+        return view ('leader.userPortalForm' , compact('group','leader','portalSet'));
+        
+    }
+
+    public function myUserPortalStore( Request $request) {
+         
+        $leader = Auth::user();
+        $group = Group::where('leader_id', $leader->id)->first();
+        $portalSet = PortalSet::where('id', $group->portal_set_id)->first();
+
+
+        $member = new GroupMember();
+
+        $member->group_id = $group->id;
+        $member->user_id = $leader->id;
+        $member->weekly_commitment = $request->weekly_commitment;
+        $member->group_sare  = $request->shares_per_week;
+
+        $member->save();
+
+        return redirect()->route('user.dashboard');
+
+    }
+
+
 }

@@ -211,6 +211,35 @@ class MemberController extends Controller
         return redirect()->back()->with('success', 'Member payout successfully');
 
     }
+    
+    public function userDestroy(Request $request)
+    {
+        try {
+            $user = User::findOrFail($request->user_id);
+            $contribution = Contribution::where('user_id', $user->id)->first();
+
+            if($contribution){
+                return back()->with('success', 'User maded Contribution Can Not Deleted.');
+            }
+
+            $groupMember = GroupMember::where('user_id', $user->id)->first();
+
+            $groupMember->delete();
+            $this->createNotification(
+                $user->name . " deleted successfully",
+                $user->id,
+                auth()->user()->id
+            );  
+            $user->delete();
+
+            return back()->with('success', 'User Deleted Sucsessfully.');
+            
+        } catch (\Exception $e) {
+
+            return back()->with('error', $e->getMessage());
+        }
+    }
+    
      public function logout()
     {
         Auth::logout();

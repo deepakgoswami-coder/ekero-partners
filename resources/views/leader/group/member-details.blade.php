@@ -57,26 +57,28 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex justify-content-around my-2 pt-75">
-                                        <div class="d-flex align-items-start me-2">
-                                            <span class="badge bg-light-primary p-75 rounded">
-                                                <i data-feather="check" class="font-medium-2"></i>
-                                            </span>
-                                            <div class="ms-75">
-                                                <h4 class="mb-0">1.23k</h4>
-                                                <small>Contribution</small>
+                                    {{--
+                                            <div class="d-flex justify-content-around my-2 pt-75">
+                                                <div class="d-flex align-items-start me-2">
+                                                    <span class="badge bg-light-primary p-75 rounded">
+                                                        <i data-feather="check" class="font-medium-2"></i>
+                                                    </span>
+                                                    <div class="ms-75">
+                                                        <h4 class="mb-0">1.23k</h4>
+                                                        <small>Contribution</small>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-start">
+                                                    <span class="badge bg-light-primary p-75 rounded">
+                                                        <i data-feather="briefcase" class="font-medium-2"></i>
+                                                    </span>
+                                                    <div class="ms-75">
+                                                        <h4 class="mb-0">568</h4>
+                                                        <small>Payouts</small>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex align-items-start">
-                                            <span class="badge bg-light-primary p-75 rounded">
-                                                <i data-feather="briefcase" class="font-medium-2"></i>
-                                            </span>
-                                            <div class="ms-75">
-                                                <h4 class="mb-0">568</h4>
-                                                <small>Payouts</small>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        --}}
                                     <h4 class="fw-bolder border-bottom pb-50 mb-1">Details</h4>
                                     <div class="info-container">
                                         <ul class="list-unstyled">
@@ -113,13 +115,15 @@
                                                 <span>{{ $user->address ?? '' }}</span>
                                             </li>
                                         </ul>
-                                        <div class="d-flex justify-content-center pt-2">
-                                            <!-- <a href="javascript:;" class="btn btn-primary me-1" data-bs-target="#editUser" data-bs-toggle="modal">
-                                                        Edit
-                                                    </a> -->
-                                            <a href="javascript:;" class="btn btn-outline-danger suspend-user">Remove From
-                                                Group</a>
-                                        </div>
+                                        {{--
+                                                <div class="d-flex justify-content-center pt-2">
+                                                    <!-- <a href="javascript:;" class="btn btn-primary me-1" data-bs-target="#editUser" data-bs-toggle="modal">
+                                                                Edit
+                                                            </a> -->
+                                                    <a href="javascript:;" class="btn btn-outline-danger suspend-user">Remove From
+                                                        Group</a>
+                                                </div>
+                                        --}}
                                     </div>
                                 </div>
                             </div>
@@ -131,23 +135,25 @@
                         <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
                             <!-- User Pills -->
                             <ul class="nav nav-pills mb-2">
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="app-user-view-account.html">
-                                        <i data-feather="user" class="font-medium-3 me-50"></i>
-                                        <span class="fw-bold">Account</span></a>
-                                </li>
-                                <li class="nav-item">
+                                {{--
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="app-user-view-account.html">
+                                            <i data-feather="user" class="font-medium-3 me-50"></i>
+                                            <span class="fw-bold">Account</span></a>
+                                    </li>
+                                --}}
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" href="app-user-view-security.html">
                                         <i data-feather="lock" class="font-medium-3 me-50"></i>
                                         <span class="fw-bold">Contribution</span>
                                     </a>
-                                </li>
-                                <li class="nav-item">
+                                </li> -->
+                                <!-- <li class="nav-item">
                                     <a class="nav-link" href="app-user-view-billing.html">
                                         <i data-feather="bookmark" class="font-medium-3 me-50"></i>
                                         <span class="fw-bold">Payouts</span>
                                     </a>
-                                </li>
+                                </li> -->
                                 
                             </ul>
                             <!--/ User Pills -->

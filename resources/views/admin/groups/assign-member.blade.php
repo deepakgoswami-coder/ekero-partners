@@ -63,10 +63,21 @@
                                                    {{ $val->weekly_commitment ?? '' }}
                                                 </td>
                                                 <td>
+                                                
+                                                <form action="{{ route('admin.users.destroy') }}" method="POST" onsubmit="return confirm('Are you sure to delete this user?');">
+                                                        @csrf
+                                                        @method('POST')
+                                                        <input type="hidden" name="user_id" value="{{$val->member->id}}">
+                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                    
                                                     <!-- Payout Button -->
-                                                    <button type="button" class="btn btn-{{ $val->has_recived != 1 ? 'success' : 'secondary' }}" @if($val->has_recived != 1) data-bs-toggle="modal" data-bs-target="#payoutModal{{ $val->id }}" @endif>
+                                                    <!-- <button type="button" class="btn btn-{{ $val->has_recived != 1 ? 'success' : 'secondary' }}" @if($val->has_recived != 1) data-bs-toggle="modal" data-bs-target="#payoutModal{{ $val->id }}" @endif>
     Payout
-</button>
+</button> -->
+						
 
 <!-- Payout Modal -->
 <div class="modal fade" id="payoutModal{{ $val->id }}" tabindex="-1" aria-labelledby="payoutModalLabel{{ $val->id }}" aria-hidden="true">

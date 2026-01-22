@@ -224,11 +224,11 @@
                 <!-- Stats Summary -->
                 <div class="stats-summary">
                     <div class="stat-card">
-                        <div class="stat-value">{{ $leader->total() }}</div>
+                        <div class="stat-value">{{ $totalLeader}}</div>
                         <div class="stat-label">Total Leaders</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">{{ $leader->where('status', 1)->count() }}</div>
+                        <div class="stat-value">{{ $totalActiveLeader ?? '' }}</div>
                         <div class="stat-label">Active Leaders</div>
                     </div>
                     <div class="stat-card">
@@ -253,6 +253,7 @@
                                     <th>Contact</th>
                                     <th>Joined Date</th>
                                     <th>Status</th>
+                                    <th>Bank Detail</th>
                                     <th width="120">Actions</th>
                                 </tr>
                             </thead>
@@ -271,7 +272,8 @@
                                             @if($val->group && $val->group->name)
                                                 <span class="group-name">
                                                     <a href="{{ route('contribution.listt', $val->group->id) }}">
-                                                        {{ $val->group->name }}
+                                                        {{-- $val->group->name --}}
+                                                        {{ Str::limit($val->group->name, 10) }}
                                                     </a>
                                                 </span>
                                             @else
@@ -297,6 +299,13 @@
                                             <span class="status-badge {{ $val->status == 1 ? 'status-active' : 'status-inactive' }}">
                                                 {{ $val->status == 1 ? 'Active' : 'Inactive' }}
                                             </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('admin.account.details' , $val->id) }}">
+                                                <span class="status-badge status-active">
+                                                    Bank's Data
+                                                </span>
+                                            </a>
                                         </td>
                                         <td>
                                             <div class="action-buttons">

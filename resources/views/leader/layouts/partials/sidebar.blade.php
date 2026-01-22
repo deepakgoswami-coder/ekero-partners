@@ -20,12 +20,12 @@ ease;
 }
 </style>
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
-    <div class="navbar-header">
-        <ul class="nav navbar-nav flex-row">
-            <li class="nav-item  me-auto">
-                <a class="navbar-brand" href="{{ route('leader.dashboard') }}">
+    <div class="navbar-header p-0 ps-1">
+        <ul class="nav navbar-nav flex-row align-items-center">
+            <li class="nav-items me-auto mb-0">
+                <a class="navbar-brand p-0 mb-0 m-0" href="{{ route('leader.dashboard') }}">
                     <div class="brand-logo">
-                        <img src="{{ asset('admin/icons/png.jpeg') }}"  alt="Ekero Partners" class="brand-image">
+                        <img src="{{ asset('images/ekeroLogo.png') }}"  alt="Ekero Partners" class="brand-image">
                         <span class="brand-text">Leader Portal</span>
                     </div>
                 </a>
@@ -42,7 +42,7 @@ ease;
     <div class="shadow-bottom"></div>
 
     <div class="main-menu-content mt-2">
-        <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
+        <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation" style="padding:0px .5rem">
             <!-- Dashboard -->
             <li class="nav-item">
                 <a class="d-flex align-items-center {{ request()->routeIs('leader.dashboard') ? 'active' : '' }}"
@@ -85,6 +85,48 @@ ease;
                 </a>
             </li>
 
+            <!-- Account detail to admin -->
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('leader.bank.details') ? 'active' : '' }}"
+                   href="{{ route('leader.bank.details') }}">
+                    <div class="menu-icon-wrapper">
+                        <i data-feather="file-text" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">Bank Details</span>
+                    <span class="menu-badge badge bg-light-warning">To Admin</span>
+                </a>
+            </li>
+            <!-- leader's portal as user -->
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('leader.user.*') ? 'active' : '' }}"
+                   href="{{ route ('leader.user.portal')}}">
+                    <div class="menu-icon-wrapper">
+                        <i data-feather="user" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">My User Panel</span>
+                    <span class="menu-badge badge bg-light-warning">User</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('leader.calender.index.*') ? 'active' : '' }}"
+                   href="{{ route ('leader.calender.index')}}">
+                    <div class="menu-icon-wrapper">
+<i data-feather="calendar" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">Calendar</span>
+                    <span class="menu-badge badge bg-light-warning">Date</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('leader.coach.chat.list.*') ? 'active' : '' }}"
+                   href="{{ route ('leader.coach.chat.list')}}">
+                    <div class="menu-icon-wrapper">
+<i data-feather="message-circle" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">Chat</span>
+                    <span class="menu-badge badge bg-light-warning">Coach</span>
+                </a>
+            </li>
             <!-- Quick Stats Section -->
             <li class="navigation-header mt-4">
                 <span class="navigation-header-text">Group Stats</span>
@@ -142,6 +184,7 @@ ease;
 </div>
 
 <!-- Help Modal -->
+
 <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -155,21 +198,22 @@ ease;
                         <i data-feather="mail" class="support-icon"></i>
                         <div>
                             <strong>Email Support</strong>
-                            <p>support@ekeropartners.com</p>
+                         
+                            <p>{{ $supportDetails->email ?? "Support_EkeroPartners@gmail.com" }}</p>
                         </div>
                     </div>
                     <div class="support-item">
                         <i data-feather="phone" class="support-icon"></i>
                         <div>
                             <strong>Phone Support</strong>
-                            <p>+1 (555) 123-4567</p>
+                            <p>{{ $supportDetails->phone ?? "+1234567800" }}</p>
                         </div>
                     </div>
                     <div class="support-item">
                         <i data-feather="clock" class="support-icon"></i>
                         <div>
                             <strong>Support Hours</strong>
-                            <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
+                            <p>{{ $supportDetails->day ?? "EveryDay   -" }}{{ $supportDetails->time ?? "  24*7"}}</p>
                         </div>
                     </div>
                 </div>

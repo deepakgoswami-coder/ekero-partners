@@ -9,9 +9,17 @@
     <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Register Page - ekero - Bootstrap HTML admin template</title>
-    <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/app-assets/images/ico/favicon.ico')}}">
+    <title>Ekero Partners</title>
+      
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16"  href="{{ asset('admin/icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32"  href="{{ asset('admin/icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/icons/favicon.png')}}">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180"  href="{{ asset('admin/icons/apple-touch-icon.png')}}" >
+
+    <meta name="theme-color" content="#4CAF50">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
@@ -58,8 +66,8 @@
                         <div class="d-none d-lg-flex col-lg-6 align-items-center p-5">
 
                             <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-                        <a class="brand-logo" href="index.html">
-                            <img src="{{ asset('images/newlogo.png') }}" alt="Ekero Logo" style="height: 120px; width:auto; position: static !important;">
+                        <a class="brand-logo" href="{{ route('website.home', ['lang' => 'en']) }}">
+                            <img src="{{ asset('images/ekeroLogo.png') }}" alt="Ekero Logo" style="height: 120px; width:auto; position: static !important;">
                         </a>
                                 <img class="img-fluid" src="{{ asset('admin/app-assets/images/pages/register-v2.svg')}}" alt="Register V2" /></div>
                         </div>

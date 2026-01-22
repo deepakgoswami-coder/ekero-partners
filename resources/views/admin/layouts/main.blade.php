@@ -4,7 +4,7 @@
     @include('admin.layouts.partials.sidebar')
 
         @yield('content')
-    @include('admin.layouts.partials.footer')
+    @include('user.layouts.partials.footer')
         @yield('script')
 </body>
 

@@ -24,6 +24,14 @@ class User extends Authenticatable
         'phone',
         'password',
         'status',
+        'role',
+        'cv_path',
+        'textPassword',
+        'assigned_coach_id',
+        'assign_leader',
+        'address',
+        'last_login_at',
+        
     ];
 
     /**
@@ -56,6 +64,12 @@ class User extends Authenticatable
             ->withPivot('weekly_commitment', 'total_contributed', 'is_active')
             ->withTimestamps();
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
 
     /**
      * Get all contributions made by user

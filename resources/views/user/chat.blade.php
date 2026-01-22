@@ -10,19 +10,19 @@
         <div class="content-header row"></div>
         <div class="content-body">
             <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-10 col-xl-11">
-                        <div class="card chat-card">
+                <div class="row">
+                    <div class="col-lg-10 col-xl-12">
+                        <div class="card chat-card rounded-0">
                             <div class="card-header chat-header bg-primary text-white">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar bg-light-primary me-2">
+                                        <div class="avatar bg-light-primary me-2 text-white">
                                             <div class="avatar-content">
                                                 <i class="fas fa-users fa-lg"></i>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 class="mb-0">{{ $group->name }}</h4>
+                                            <h4 class="mb-0 text-white">{{ $group->name }}</h4>
                                             <small class="text-white-50">
                                                 <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>
                                                 Online
@@ -71,6 +71,10 @@
         </div>
     </div>
 </div>
+            @php
+              $user = Auth::user();
+              $groupId = \App\Models\GroupMember::where('user_id',$user->id)->first()->group_id;
+            @endphp
 <div class="sidenav-overlay"></div>
 <div class="drag-target"></div>
 
@@ -98,12 +102,12 @@
     }
 
     .chat-body {
-        height: 260px;
+        /* height: 260px; */
         background-color: #f8f9fa;
     }
 
     .chat-messages {
-        height: 100%;
+           height: calc(100vh - 333px);
         overflow-y: auto;
         padding: 1rem;
         display: flex;
@@ -283,7 +287,7 @@
     });
 
     function fetchMessages() {
-        $.get('{{ route("groups.chat.messages", $group->id) }}', function(data) {
+        $.get('{{ route("user.groups.chat.messages", $groupId) }}', function(data) {
             let html = '';
             console.log(data);
 
@@ -344,7 +348,7 @@
             let message = $('#message').val();
             if(message.trim() === '') return;
 
-            $.post('{{ route("groups.chat.store", $group->id) }}', $(this).serialize(), function(data) {
+            $.post('{{ route("user.groups.chat.store", $groupId) }}', $(this).serialize(), function(data) {
                 $('#message').val('');
                 fetchMessages();
             });

@@ -1,0 +1,255 @@
+body{
+    margin: 14px;
+    background-color: #fff;
+    
+}
+.about-bg {
+  background-image: url(../images/about-banner.png);
+  height: 95vh;
+  background-repeat : no-repeat;
+  background-position: bottom;
+  background-size: cover;
+  border-radius: 20px;
+}
+.terms-bg {
+  background-image: url(../images/terms.png);
+  height: 95vh;
+  background-repeat : no-repeat;
+  background-position: bottom;
+  background-size: cover;
+  border-radius: 20px;
+}
+
+.about-section3 {
+  background-image: url(../images/about3.png);
+  background-repeat : no-repeat;
+  background-position: center;
+  background-size: contain;
+  border-radius: 20px;
+}
+
+
+
+.arrowoleft {
+background-image: url(../images/arrowl.png);
+  background-repeat : no-repeat;
+  background-size: cover;
+}
+.banner-heading1{
+  font-family: "Petit Formal Script", cursive;
+  font-weight: 400;
+  font-style: Regular;
+  font-size: 86px;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
+  position:relative;
+}
+.term-heading1{
+  font-family: "Petit Formal Script", cursive;
+  font-weight: 400;
+  font-style: Regular;
+  leading-trim: NONE;
+  line-height: 100%;
+  letter-spacing: 0%;
+  position:relative;
+}
+
+.together{
+  /* font-family: Open Sans; */
+font-weight: 700;
+font-style: Bold;
+font-size: 64px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-transform: uppercase;
+
+}
+.btn-support{
+  background-color: #39B44F;
+  padding:10px;
+  border-radius: 20px;
+  font-size: 20px
+}
+.avatar-overlap img {
+margin-right: -0.8rem; 
+}
+.avatar-overlap img:last-child {
+margin-right: 0;
+}
+.active {
+  color: #39B44F;
+  font-weight: 600;
+}
+
+  .dropdown-animate {
+  transition: all 0.3s ease;
+  transform-origin: top;
+}
+
+
+.clip-arrow-right {
+clip-path: polygon(
+  0% 0%,       
+  90% 0%,      
+  100% 50%,    
+  90% 100%,    
+  0% 100%     
+);
+
+}
+.hero-bg {
+    
+    background-image: url(../images/homee.png);
+    height: 100vh;
+    background-repeat : no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    border-radius: 20px;
+}
+.contact-bg {
+    
+    background-image: url(../images/contact-bg.png);
+    height: 95vh;
+    background-repeat : no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    border-radius: 20px;
+    margin-bottom:30px;
+}
+.Entrepreneur-bg{
+    background-image: url(../images/enter.png);
+    height: 95vh;
+    background-repeat : no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    border-radius: 20px;
+}
+.Coach-bg{
+    background-image: url(../images/coach.png);
+    height: 95vh;
+    background-repeat : no-repeat;
+    background-position: bottom;
+    background-size: cover;
+    border-radius: 20px;
+}
+.growtext{
+    font-family: "Petit Formal Script", cursive;
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 86px;
+    leading-trim: NONE;
+    line-height: 100%;
+    letter-spacing: 0%;
+    position:relative;
+}
+.together{
+    /* font-family: Open Sans; */
+font-weight: 700;
+font-style: Bold;
+font-size: 64px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+text-transform: uppercase;
+
+}
+.btn-support{
+    background-color: #39B44F;
+    padding:10px;
+    border-radius: 20px;
+    font-size: 20px
+}
+.avatar-overlap img {
+  margin-right: -0.8rem; 
+}
+.avatar-overlap img:last-child {
+  margin-right: 0;
+}
+.active {
+    color: #39B44F;
+    font-weight: 600;
+}
+
+    .dropdown-animate {
+    transition: all 0.3s ease;
+    transform-origin: top;
+}
+.rightshape{
+    clip-path: polygon(0% 0,100% 10%,100% 88%,0% 100%)
+}
+.trapezium {
+    clip-path: polygon(0% 0,100% 10%,100% 92%,0% 100%);
+  }
+  .trapezium2 {
+  clip-path: polygon(0% 10%, 100% 0%, 100% 100%, 0% 90%);
+}
+  
+  .trapezium-bg {
+    clip-path: polygon(0% 0,100% 0%,100% 100%,0% 100%);
+  }
+  .bgimg{
+    background-image: url(../images/cta.png);
+    background-repeat: no-repeat;
+    width:100%;
+    background-size: cover;
+    background-position: top;
+  }
+  .bgimages{
+    background-image: url(../images/group-piggy.png);
+    background-repeat: no-repeat;
+    width:100%;
+    background-size: contain;
+
+  }
+  @media (min-width: 1024px) {
+    .step1::after {
+      content: url('../images/1.png');
+      position: absolute;
+      top: 79%;
+      transform: translateY(-50%);
+      left: 15%;
+    }
+  
+    .step2::after {
+      content: url('../images/2.png');
+      position: absolute;
+      left: calc(0.25 * 71rem);   
+      top: calc(0.25 * 17rem);   
+    }
+  
+    .step4::after {
+      content: url('../images/4.png');
+      position: absolute;
+      right: calc(0.25 * 71rem);
+      top: calc(0.25 * 17rem);
+    }
+  
+    .step5::after {
+      content: url('../images/5.png');
+      position: absolute;
+      top: 79%;
+      transform: translateY(-50%);
+      right: 15%;
+    }
+  }
+  @media (min-width: 768px){
+    .arroworight {
+  background-image: url(../images/arrowr.png);
+  background-repeat : no-repeat;
+  background-size: cover;
+}
+  }
+  @media (max-width: 767px){
+    .bgimages{
+      background-size:cover;
+    }
+     .bannersection {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+    }
+  }
