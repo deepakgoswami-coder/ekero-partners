@@ -22,7 +22,11 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
-
+    protected $except = [
+        'admin/login',
+        'leader/login',
+        'user/login',
+    ];
     /**
      * The application's route middleware groups.
      *
@@ -44,7 +48,10 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
-
+ protected $routeMiddleware = [
+        
+        // आप यहां अन्य route-specific middleware aliases भी जोड़ सकते हैं
+    ];
     /**
      * The application's middleware aliases.
      *
@@ -57,6 +64,10 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'user' => \App\Http\Middleware\UserMiddleWare::class,
         'leader' => \App\Http\Middleware\LeaderMiddleware::class,
+
+        'coach' => \App\Http\Middleware\CoachMiddleware::class,
+
+    
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
@@ -67,5 +78,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+         'setlocale' => \App\Http\Middleware\SetLocale::class,
+         'session.check' => \App\Http\Middleware\EnsureSessionExists::class,
+        'track.session' => \App\Http\Middleware\TrackVisitorSession::class,
     ];
 }

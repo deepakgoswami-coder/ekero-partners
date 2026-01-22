@@ -7,11 +7,18 @@
     <meta name="description" content="Ekero Partners - Group Investment Management System">
     <meta name="keywords" content="investment, groups, management, portal, admin">
     <meta name="author" content="Ekero Partners">
-    <title>Ekero Partners - Admin Dashboard</title>
+    <title>Ekero Partners - Leader Dashboard</title>
     
+      
     <!-- Favicon -->
-    <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('web/fabb.ico') }}">
+    <link rel="icon" type="image/png" sizes="16x16"  href="{{ asset('admin/icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32"  href="{{ asset('admin/icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/icons/favicon.png')}}">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180"  href="{{ asset('admin/icons/apple-touch-icon.png')}}" >
+
+    <meta name="theme-color" content="#4CAF50">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -273,12 +280,21 @@
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
+                          {{--
                         <div class="dropdown-header">
+                           
                             <h6 class="dropdown-title">Welcome, {{ auth()->user()->name }}</h6>
+                           
                             <span class="dropdown-subtitle">{{ auth()->user()->email }}</span>
+                            
                         </div>
+                        --}}
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ route('logout') }}">
+                          <a class="dropdown-item" href="{{ route('leader.update.profile') }}">
+                            <i class="me-50" data-feather="user"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a class="dropdown-item" href="{{ route('leader.logout') }}">
                             <i class="me-50" data-feather="power"></i>
                             <span>Logout</span>
                         </a>

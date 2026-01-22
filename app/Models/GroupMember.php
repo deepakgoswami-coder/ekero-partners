@@ -12,8 +12,11 @@ class GroupMember extends Model
         'status',
         'has_received',
         'payout_order',
+        'weekly_commitment',
+        'group_sare',
         'user_id',
         'group_id',
+        'share'
     ];
     public function member(){
         return $this->belongsTo(User::class,'user_id');

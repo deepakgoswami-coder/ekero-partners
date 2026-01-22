@@ -9,43 +9,115 @@ use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+use App\Models\PortalSet; 
+use App\Models\Group;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use  App\Mail\ForgetPasswardMail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpEmail;
-use Illuminate\Support\Facades\Session;
+
+
+
 
 class AuthController extends Controller
 {
     public function register(){
         return view("leader.register");
     }
-    public function registerStore(StoreLeaderRequest $request){
-         if ($request->hasFile('idproof')) {
-            $file = $request->file('idproof');
-            $destinationPath = public_path('uploads/idproofs');
+    public function registerStore(Request $request)
+    {
+        Log::info('Leader self-registration started.', ['email' => $request->email]);
+        DB::beginTransaction(); 
 
-            if (!File::exists($destinationPath) || !is_dir($destinationPath)) {
-                File::makeDirectory($destinationPath, 0775, true);
+        try {
+            if ($request->hasFile('idproof')) {
+                // ... (File Uploading Logic) ...
             }
 
-            $fileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move($destinationPath, $fileName);
+            // --- 1. User Creation ---
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email; 
+            $user->password = Hash::make($request->password);
+            $user->address = $request->address;
+            $user->id_proof = $request->idproof ?? null;
+            $user->role = 2;
+            $user->save();
+            Log::info('New Leader user created successfully.', ['user_id' => $user->id]);
+            
+            // --- 2. PortalSet Check ---
+            $portalSet = PortalSet::where('isFull', 0)->first();
+            
+            if (!$portalSet) {
+                Log::error('CRITICAL: No active PortalSet found for leader registration.', ['user_email' => $request->email]);
+                throw new \Exception("No active PortalSet found for group creation.");
+            }
+            Log::debug('Active PortalSet found.', ['portal_set_id' => $portalSet->id]);
 
-            // store file path in DB
-            $request['idproof'] = 'uploads/idproofs/' . $fileName;
+            // --- 3. Group Number Decrement ---
+            Group::where('portal_set_id', $portalSet->id)
+                ->whereBetween('group_number', [6, 52])
+                ->decrement('group_number');
+            Log::info('Group numbers decremented for PortalSet.', ['portal_set_id' => $portalSet->id]);
+
+            $names = [
+                'Mercury', 'Venus', 'Jupiter', 'Saturn', 'Uranus', 'Neptune',
+                'Pluto', 'Sky', 'Moon', 'Sun', 'Heaven'
+            ];
+
+            $totalGroups = Group::where('portal_set_id', $portalSet->id)
+                ->where('group_number', '>=', 6)
+                ->count();
+                
+            $nameIndex = $totalGroups % count($names);
+            $cycle = intdiv($totalGroups, count($names));
+
+            $baseName = $names[$nameIndex];
+            $groupName = $cycle > 0 ? $baseName . $cycle : $baseName;
+            Log::debug('Generated Group Name.', ['name' => $groupName, 'total_groups' => $totalGroups]);
+
+            $inviteLink = Str::uuid()->toString();
+
+            // --- 4. Group Creation ---
+            $group = Group::create([
+                'portal_set_id' => $portalSet->id,
+                'target_amount' => $portalSet->target_amount,
+                'name' => $groupName,
+                'group_number' => 52,
+                'leader_id' => $user->id,
+                'current_amount' => 0,
+                'project_name' => $request->project_name ?? $groupName,
+                'project_description' => $request->project_description ?? "Auto-generated group for new leader registration",
+                'logo_path' => null,
+                'video_path' => null,
+                'invite_link' => $inviteLink,
+                'is_active' => true
+            ]);
+            Log::info('New Group created successfully.', ['group_id' => $group->id, 'group_name' => $groupName]);
+            
+            DB::commit();
+            Log::info('Transaction committed. Leader registration completed successfully.', ['user_id' => $user->id]);
+
+            return redirect()->route('leader.login')->with('success','Registration successful. Please login.');
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            
+            // --- 5. Error Logging ---
+            Log::error('Leader registration FAILED and transaction rolled back.', [
+                'error_message' => $th->getMessage(),
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'user_input_email' => $request->email,
+                'stack_trace' => $th->getTraceAsString()
+            ]);
+            
+            return redirect()->back()->withInput()->withErrors('Registration failed. Please try again.');
         }
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email; 
-        $user->password = Hash::make($request->password);
-        $user->address = $request->address;
-        $user->id_proof = $request->idproof;
-        $user->role = 2; // leader role
-        $user->save();
-
-
-        // ✅ Step 5: Return response
-        return redirect()->route('leader.login')->with('success','Registration successful. Please login.');    
     }
     public function sendOtp(Request $request)
     {
@@ -53,14 +125,14 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
         ]);
 
-        // $emailOtp = rand(000000, 999999);
-        $emailOtp = "123456";
+        $emailOtp = rand(000000, 999999);
+        // $emailOtp = "123456";
         $request->session()->put('new_email', $request->email);
         $request->session()->put('new_otp', $emailOtp);
 
         // Store OTP in session (or database)
         Session::put('otp_for_' . $request->email, $emailOtp);
-        Session::put('otp_expires_' . $request->email, now()->addMinutes(5));
+        Session::put('otp_expires_' . $request->email, now()->addMinutes(10));
  
         Mail::to($request->email)->send(new OtpEmail($emailOtp));
  
@@ -74,16 +146,18 @@ class AuthController extends Controller
             'email' => 'required|email|exists:users,email',
         ]);
 
-        // $emailOtp = rand(000000, 999999);
-        $emailOtp = "123456";
+        $user = User::where('email', $request->email)->first();
+
+        $emailOtp = rand(000000, 999999);
+        // $emailOtp = "123456";
         $request->session()->put('new_email', $request->email);
         $request->session()->put('new_otp', $emailOtp);
 
         // Store OTP in session (or database)
         Session::put('otp_for_' . $request->email, $emailOtp);
-        Session::put('otp_expires_' . $request->email, now()->addMinutes(5));
+        Session::put('otp_expires_' . $request->email, now()->addMinutes(10));
  
-        Mail::to($request->email)->send(new OtpEmail($emailOtp));
+        Mail::to($request->email)->send(new ForgetPasswardMail($emailOtp , $user));
  
 
         return response()->json(['message' => 'OTP sent to your email address!']);

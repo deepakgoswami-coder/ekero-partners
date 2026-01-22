@@ -10,8 +10,16 @@
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
     <title>Ekero Partners</title>
-    <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/app-assets/images/ico/favicon.ico')}}">
+      
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16"  href="{{ asset('admin/icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32"  href="{{ asset('admin/icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/icons/favicon.png')}}">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180"  href="{{ asset('admin/icons/apple-touch-icon.png')}}" >
+
+    <meta name="theme-color" content="#4CAF50">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
@@ -56,23 +64,42 @@
                        
                         <!-- /Brand logo-->
                         <!-- Left Text-->
-                        <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
-    <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-        <img class="img-fluid" 
-             src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
-             alt="Login V2"
-             style="max-width: 85%; height: auto;">  <!-- 👈 reduced size -->
-    </div>
-
-    <a class="brand-logo" href="index.html">
-        <img src="{{ asset('images/newlogo.png') }}" 
-             alt="Ekero Logo" 
-             style="height: 120px; width:auto; position: static !important;">
-    </a>
-</div>
+     <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
+                    <div class="w-100 d-lg-flex flex-column  justify-content-left px-5">
+                        <div class="d-flex  align-items-baseline gap-2">
+                                <a class="brand-logoo" href="{{ route('website.home', ['lang' => 'en']) }}">
+                                <img src="{{ asset('images/ekeroLogo.png') }}" 
+                                    alt="Ekero Logo" 
+                                    style="height: 150px; width:auto; position: static !important;">
+                            </a>
+                            <p class="fw-bold" style="font-size:18px; color:#000;">Building Wealth Together</p>
+                        </div>
+                      
+                    <img class="img-fluid" 
+                            src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
+                            alt="Login V2"
+                            style="max-width: 85%; height: auto;">
+                    </div>
+                </div>
                         <!-- /Left Text-->
                         <!-- Login-->
-                        <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
+                       <div class="col-lg-4 align-items-center auth-bg px-2 p-lg-5 d-flex justify-content-center flex-column">
+                             @if ($errors->any())
+    <div class="alert alert-danger p-1">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+{{-- Session Error (for invalid credentials etc.) --}}
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
                             <div class="col-12 col-sm-8 col-md-6 col-lg-12 px-xl-2 mx-auto">
                                 <h2 class="card-title fw-bold mb-1">Welcome to Ekero Partners! 👋</h2>
                                 <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>

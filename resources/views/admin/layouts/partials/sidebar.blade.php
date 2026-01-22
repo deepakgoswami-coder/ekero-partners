@@ -18,6 +18,11 @@ ease;
     position: relative;
     overflow: hidden;
 }
+
+.brand-image {
+    width: 150px !important;   /* increase as needed */
+    height: auto;
+}
 </style>
 <div class="main-menu menu-fixed menu-light menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="navbar-header">
@@ -25,7 +30,11 @@ ease;
             <li class="nav-item  me-auto">
                 <a class="navbar-brand" href="{{ route('dashboard') }}">
                     <div class="brand-logo">
-                        <img src="{{ asset('admin/icons/png.jpeg') }}" alt="Ekero Partners" class="brand-image">
+                        <img src="{{ asset('images/ekeroLogo.png') }}" 
+                            alt="Ekero Partners" 
+                            class="brand-image" 
+                            >
+
                         <span class="brand-text">Ekero Partners</span>
                     </div>
                 </a>
@@ -85,6 +94,44 @@ ease;
                 </a>
             </li>
 
+            <!-- coach section  -->
+
+
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('coach.*') ? 'active' : '' }}"
+                   href="{{route('coach.applicationList')}}">
+                    <div class="menu-icon-wrapper">
+                        <i data-feather="file-text" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">Coach Forms</span>
+                    <span class="menu-badge badge bg-light-warning">Application</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('admin.coach.*') ? 'active' : '' }}"
+                   href="{{route('admin.coach.list')}}">
+                    <div class="menu-icon-wrapper">
+                        <i data-feather="compass" class="menu-icon ms-1"></i>
+
+                    </div>
+                    <span class="menu-title text-truncate">Coach Manage</span>
+                    <span class="menu-badge badge bg-light-warning">Handle</span>
+                </a>
+            </li>
+
+
+            <!-- help and support edit -->
+            <li class="nav-item">
+                <a class="d-flex align-items-center {{ request()->routeIs('dashboard.*') ? 'active' : '' }}"
+                   href="{{ route('admin.help.support') }}">
+                    <div class="menu-icon-wrapper">
+                        <i data-feather="help-circle" class="menu-icon ms-1"></i>
+                    </div>
+                    <span class="menu-title text-truncate">Support</span>
+                    <span class="menu-badge badge bg-light-warning">Help</span>
+                </a>
+            </li>
+         
             <!-- Quick Stats Section -->
             <li class="navigation-header mt-4">
                 <span class="navigation-header-text">Quick Stats</span>

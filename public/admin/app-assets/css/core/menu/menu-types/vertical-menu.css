@@ -21,7 +21,8 @@
   height: 20px;
   width: 20px;
   font-size: 1.45rem;
-  margin-right: 1.1rem;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
   flex-shrink: 0; }
 
 .vertical-layout.vertical-menu-modern .main-menu .navigation .menu-content > li > a svg,
@@ -32,7 +33,7 @@
   width: 11px; }
 
 .vertical-layout.vertical-menu-modern.menu-expanded .main-menu {
-  width: 260px; }
+  width: 270px; }
 
 .vertical-layout.vertical-menu-modern.menu-expanded .main-menu .navigation .navigation-header .feather-more-horizontal {
   display: none; }
@@ -171,7 +172,7 @@
 
 @media (min-width: 992px) {
   .vertical-layout.vertical-menu-modern .main-menu {
-    width: 260px; } }
+    width: 276px; } }
 
 @media (max-width: 1199.98px) {
   .vertical-layout.vertical-menu-modern .main-menu {

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\Group;
 use App\Models\GroupMember;
+use App\Models\PortalSet;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -14,14 +15,35 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpEmail;
 use Illuminate\Support\Facades\Session;
+use  App\Mail\ForgetPasswardMail;
 
 class AuthController extends Controller
 {
 
-    public function register($ref = null)
+    public function register(Request $request, $id = null)
     {
-        $link = $ref;
-        return view("user.register", compact('link'));
+        $shares = $request->query('shares', 1);
+
+        // 2. ID को संभालें (यह Path Parameter /register/{id} से आएगा)
+        $link = null;
+
+        if ($id) {
+            $group = Group::find($id);
+            $link = $group->invite_link;
+        }
+        
+        // 3. यदि 'link' Query Parameter में आया है (जैसे /register?link=XYZ)
+        if ($request->query('link')) {
+            $group = Group::where('invite_link', $request->query('link'))->first();
+            if ($group) {
+                $portalSet = PortalSet::find($group->portal_set_id);
+                $link = $group->invite_link; // लिंक को रजिस्टर फॉर्म के लिए सेट करें
+                return view('user.compney-data', compact('group', 'portalSet', 'shares'));
+            }
+        }
+        
+        // यदि कोई group ID/link नहीं मिला, तो सामान्य रजिस्टर फॉर्म दिखाएं
+        return view("user.register", compact('link', 'shares','id'));
     }
 
     public function registerStore(StoreUserRequest $request)
@@ -41,7 +63,7 @@ class AuthController extends Controller
                 $groupMember->user_id = $user->id;
                 $groupMember->group_id = $group->id;
                 $groupMember->weekly_commitment = $group->target_amount;
-                $groupMember->group_sare = 0;
+                $groupMember->group_sare = $request->shares;
                 $groupMember->save();
             }
 
@@ -50,7 +72,7 @@ class AuthController extends Controller
                 $user->id,
                 $group->leader_id
             );
-            
+
             DB::commit();
             return redirect()->route('user.login')->with('success', 'Registration successful. Please login.');
         } catch (\Throwable $th) {
@@ -66,16 +88,18 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
         ]);
 
-        // $emailOtp = rand(000000, 999999);
-        $emailOtp = "123456";
+        $emailOtp = rand(000000, 999999);
+        // $emailOtp = "123456";
         $request->session()->put('new_email', $request->email);
         $request->session()->put('new_otp', $emailOtp);
 
         // Store OTP in session (or database)
         Session::put('otp_for_' . $request->email, $emailOtp);
-        Session::put('otp_expires_' . $request->email, now()->addMinutes(5));
+        Session::put('otp_expires_' . $request->email, now()->addMinutes(10));
 
-        Mail::to($request->email)->send(new OtpEmail($emailOtp));
+        Mail::to($request->email)->
+                send(new OtpEmail($emailOtp)
+            );
 
 
         return response()->json(['message' => 'OTP sent to your email address!']);
@@ -86,18 +110,20 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|exists:users,email',
         ]);
+        $user = User::where('email', $request->email)->first();
 
-        // $emailOtp = rand(000000, 999999);
-        $emailOtp = "123456";
+        $emailOtp = rand(000000, 999999);
+        // $emailOtp = "123456";
         $request->session()->put('new_email', $request->email);
         $request->session()->put('new_otp', $emailOtp);
 
         // Store OTP in session (or database)
         Session::put('otp_for_' . $request->email, $emailOtp);
-        Session::put('otp_expires_' . $request->email, now()->addMinutes(5));
- 
-        Mail::to($request->email)->send(new OtpEmail($emailOtp));
- 
+        Session::put('otp_expires_' . $request->email, now()->addMinutes(10));
+
+        Mail::to($request->email)->
+            send(new ForgetPasswardMail($emailOtp , $user));
+
 
         return response()->json(['message' => 'OTP sent to your email address!']);
     }
@@ -154,6 +180,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required',
         ]);
+
         $user = User::where('email', $request->email)->first();
 
 
@@ -169,24 +196,29 @@ class AuthController extends Controller
 
     }
 
-    public function forgetPass(){
+    public function forgetPass()
+    {
         return view("user.forgetpass");
     }
 
-    public function forgetPassStore(Request $request) {
+    public function forgetPassStore(Request $request)
+    {
         $request->validate([
-            "email"=> "required|email",
-            "password"=> "required|min:6",
+            "email" => "required|email",
+            "password" => "required|min:6",
         ]);
         $user = User::where("email", $request->email)->first();
-        if(!$user){
+        if (!$user) {
             return redirect()->route("user.register")->with("User Don't Exist ! Please Register First");
         }
         $user->password = Hash::make($request->password);
         $user->save();
-        return redirect()->route('user.login')->with('success','PassWord Updated. Please login.');    
+        return redirect()->route('user.login')->with('success', 'PassWord Updated. Please login.');
     }
+    public function test()
+    {
+        return view('test');
 
-
+    }
 }
 

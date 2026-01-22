@@ -165,6 +165,16 @@
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        } 
+        
+        .tagline h2{
+            font-size: 14px;
+            color: #000;
+            margin-bottom: 0px;
+        }
+        .tagline {
+            display: flex;
+            align-items: center;
         }
     </style>
 </head>
@@ -192,6 +202,10 @@
     <!-- BEGIN: Header -->
     <nav class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow container-xxl">
         <div class="navbar-container d-flex content">
+
+            <!-- <div class="tagline brand-text align-items-center">
+                <h2 class="brand-text">Building Wealth Together</h2>
+            </div> -->
             <ul class="nav navbar-nav align-items-center ms-auto">
 
                 <!-- Notifications -->
@@ -227,7 +241,7 @@
                         <li class="scrollable-container media-list">
                             @forelse($notifications as $notif)
                                 <a class="d-flex dropdown-item notification-item {{ $notif->is_read ? '' : 'unread' }}"
-                                   href="{{ route('leader.member.details', $notif->user_id) }}">
+                                   href="#">
                                     <div class="me-2">
                                         <div class="avatar bg-light-primary">
                                             <i data-feather="bell" class="avatar-icon"></i>
@@ -275,7 +289,7 @@
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-user">
                         <div class="dropdown-header">
                             <h6 class="dropdown-title">Welcome, {{ auth()->user()->name }}</h6>
-                            <span class="dropdown-subtitle">{{ auth()->user()->email }}</span>
+                            <!--<span class="dropdown-subtitle">{{ auth()->user()->email }}</span>-->
                         </div>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ route('logout') }}">

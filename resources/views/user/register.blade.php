@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html class="loading" lang="en" data-textdirection="ltr">
 <!-- BEGIN: Head-->
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,8 +9,17 @@
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
     <title>Register Page - ekero - Bootstrap HTML admin template</title>
-    <link rel="apple-touch-icon" href="{{ asset('admin/app-assets/images/ico/apple-icon-120.png')}}">
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('admin/app-assets/images/ico/favicon.ico')}}">
+      
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="16x16"  href="{{ asset('admin/icons/favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32"  href="{{ asset('admin/icons/favicon-32x32.png')}}">
+    <link rel="icon" type="image/png" href="{{ asset('admin/icons/favicon.png')}}">
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180"  href="{{ asset('admin/icons/apple-touch-icon.png')}}" >
+
+    <meta name="theme-color" content="#4CAF50">
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
 
     <!-- BEGIN: Vendor CSS-->
@@ -55,21 +63,23 @@
                     <div class="auth-inner row m-0">
                         
                         <!-- /Brand logo-->
-                        <!-- Left Text-->
-                                           <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
-                                            <div class="w-100 d-lg-flex align-items-center justify-content-center px-5">
-                                                <img class="img-fluid" 
-                                                    src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
-                                                    alt="Login V2"
-                                                    style="max-width: 85%; height: auto;">  <!-- 👈 reduced size -->
-                                            </div>
-
-                                            <a class="brand-logo" href="index.html">
-                                                <img src="{{ asset('images/newlogo.png') }}" 
-                                                    alt="Ekero Logo" 
-                                                    style="height: 120px; width:auto; position: static !important;">
-                                            </a>
-                                        </div>
+                        <div class="d-none d-lg-flex col-lg-8 align-items-center p-5">
+                    <div class="w-100 d-lg-flex flex-column  justify-content-left px-5">
+                        <div class="d-flex  align-items-baseline gap-2">
+                                <a class="brand-logoo" href="{{ route('website.home', ['lang' => 'en']) }}">
+                                <img src="{{ asset('images/ekeroLogo.png') }}" 
+                                    alt="Ekero Logo" 
+                                    style="height: 150px; width:auto; position: static !important;">
+                            </a>
+                            <p class="fw-bold" style="font-size:18px; color:#000;">Building Wealth Together</p>
+                        </div>
+                      
+                    <img class="img-fluid" 
+                            src="{{ asset('admin/app-assets/images/pages/login-v2.svg')}}" 
+                            alt="Login V2"
+                            style="max-width: 85%; height: auto;">
+                    </div>
+                </div>
                         <!-- /Left Text-->
                         <!-- Register-->
                         <div class="d-flex col-lg-4 align-items-center auth-bg px-2 p-lg-5">
@@ -78,7 +88,6 @@
                                 <!-- <p class="card-text mb-2">Make your app management easy and fun!</p> -->
                                 <form class="auth-register-form mt-2" action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <!-- Username -->
                                     <div class="mb-1">
                                         <label class="form-label" for="register-username">Full Name</label>
                                         <input class="form-control" id="register-username" type="text" name="name" placeholder="johndoe" />
@@ -86,19 +95,22 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
-                                    @if ($link)
-                                    
-                                    <input type="hidden" name="link" value="{{ $link ?? '' }}">
-                                    @endif
 
-                                    <!-- Email -->
+                                    {{-- $link variable Controller से आता है --}}
+                                    @isset($link)
+                                        {{-- केवल तभी दिखाएँ जब $link सेट और non-null हो --}}
+                                        <input type="hidden" name="link" value="{{ $link }}">
+                                    @endisset
+
+                                    {{-- $shares variable Controller से आता है। नाम 'shares' होना चाहिए। --}}
+                                    <input type="hidden" name="shares" value="{{ $shares ?? 0 }}">
+                                    
                                     <div class="mb-1">
                                         <label class="form-label" for="register-email">Email</label>
                                         <input class="form-control" id="register-email" type="email" name="email" placeholder="john@example.com" aria-describedby="register-email" tabindex="2" />
                                         <small class="text-danger" id="email-error"></small>
                                     </div>
 
-                                    <!-- OTP Verification -->
                                     <div class="mb-1">
                                         <label class="form-label" for="register-otp">OTP Verification</label>
                                         <div class="input-group">
@@ -106,32 +118,28 @@
                                             <button class="btn btn-outline-secondary" type="button" id="send-otp">Send OTP</button>
                                         </div>
                                         <small class="text-success" id="otp-success"></small>
-
-                                         <!-- Verify OTP Button -->
+                                        
                                         <button class="btn btn-success w-100 mt-1" type="button" id="verify-otp-btn">Verify OTP</button>
                                         
                                         <small class="text-success" id="otp-success"></small>
                                         <small class="text-danger" id="otp-error"></small>
                                     </div>
 
-
-                                    <!-- Password -->
                                     <div class="mb-1">
                                         <label class="form-label" for="register-password">Password</label>
                                         <div class="input-group input-group-merge form-password-toggle">
                                             <input class="form-control form-control-merge" id="register-password" type="password" name="password" placeholder="············" aria-describedby="password" tabindex="3" />
                                             <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
-                                        @error('password')
-                                            <small class="text-danger">{{ $message }}</small>
-                                        @enderror
+                                            @error('password')
+                                                <small class="text-danger">{{ $message }}</small>
+                                            @enderror
                                         </div>
                                     </div>
 
-                                    <!-- Submit -->
                                     <button class="btn btn-primary w-100" type="submit" tabindex="8" id="signup-btn" disabled>Sign Up</button>
                                 </form>
 
-                                <p class="text-center mt-2"><span>Already have an account?</span><a href="auth-login-cover.html"><span>&nbsp;Sign in instead</span></a></p>
+                                <p class="text-center mt-2"><span>Already have an account?</span><a href="{{ route("user.login") }}"><span>&nbsp;Sign in instead</span></a></p>
                                 
                             </div>
                         </div>

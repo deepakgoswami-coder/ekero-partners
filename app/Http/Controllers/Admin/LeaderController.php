@@ -8,6 +8,7 @@ use App\Http\Requests\StoreLeaderRequest;
 use App\Models\Group;
 use App\Models\PortalSet;
 use App\Models\User;
+use App\Models\Contribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -23,7 +24,10 @@ class LeaderController extends Controller
     public function index()
     {
         $leader = User::with('group')->where('role', 2)->latest()->paginate(10);
-        return view('admin.users.index', compact('leader'));
+        $totalActiveLeader = User::where('role',2)->where('status',1)->count();
+        $totalLeader = User::where('role',2)->count();
+        $totalInactiveLeader = User::where('role',2)->where('status',0)->count();
+        return view('admin.users.index', compact('leader','totalActiveLeader','totalInactiveLeader','totalLeader'));
     }
 
     /**
@@ -31,7 +35,9 @@ class LeaderController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        $resGroups = Group::where('leader_id' , 0)->limit(10)->get();
+        
+        return view('admin.users.create', compact('resGroups'));
     }
 
     /**
@@ -39,27 +45,31 @@ class LeaderController extends Controller
      */
     public function store(StoreAdminLeaderRequest $request)
     {
+
+        // dd("ljasld" , $request->all());
         try {
             DB::beginTransaction();
             $user = new User();
             $user->fill($request->all());
             $user->password = Hash::make($request->password);
-            $file = $request->file('profile_image');
 
-            if (!$file) {
-                return redirect()->back()->withErrors('No file uploaded.');
-            }
 
-            $destinationPath = public_path('uploads');
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0775, true);
-            }
+            // $file = $request->file('profile_image');
 
-            $fileName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move($destinationPath, $fileName);
-            chmod($destinationPath . '/' . $fileName, 0775);
+            // if (!$file) {
+            //     return redirect()->back()->withErrors('No file uploaded.');
+            // }
 
-            $user->profile_image = $fileName;
+            // $destinationPath = public_path('uploads');
+            // if (!File::exists($destinationPath)) {
+            //     File::makeDirectory($destinationPath, 0775, true);
+            // }
+
+            // $fileName = time() . '.' . $file->getClientOriginalExtension();
+            // $file->move($destinationPath, $fileName);
+            // chmod($destinationPath . '/' . $fileName, 0775);
+
+            // $user->profile_image = $fileName;
             $user->role = 2;
             $user->save();
 
@@ -74,59 +84,85 @@ class LeaderController extends Controller
                 $videoPath = $request->file('video')->store('portal-videos', 'public');
             }
 
-            $portalSet = PortalSet::where('is_active', 1)->first();
+            $portalSet = PortalSet::where('isFull', 0)->first();
 
-            Group::where('portal_set_id', $portalSet->id)
-                ->whereBetween('group_number', [6, 52])
-                ->decrement('group_number');
+            if($request->assigned_group){
 
-            $names = [
-                'Mercury',
-                'Venus',
-                'Jupiter',
-                'Saturn',
-                'Uranus',
-                'Neptune',
-                'Pluto',
-                'Sky',
-                'Moon',
-                'Sun',
-                'Heaven'
-            ];
+                $resGroup = Group::where('id', $request->assigned_group)->first();
+                
+                // Assigning the leader to this group
+                $resGroup->leader_id = $user->id;
 
-            $totalGroups = Group::where('portal_set_id', $portalSet->id)
-                ->where('group_number', '>=', 6) // exclude reserved 1–5
-                ->count();
+                // Invite 
+                $resGroup->invite_link = Str::uuid()->toString();
 
-            $nameIndex = $totalGroups % count($names);
-            $cycle = intdiv($totalGroups, count($names));
+                $resGroup->save();
+            }
+            else
+            {
+                    
+                Group::where('portal_set_id', $portalSet->id)
+                    ->whereBetween('group_number', [6, 52])
+                    ->decrement('group_number');
 
-            $baseName = $names[$nameIndex];
-            $groupName = $cycle > 0 ? $baseName . $cycle : $baseName;
-            $inviteLink = Str::uuid()->toString();
+                $names = [
+                    'Mercury',
+                    'Venus',
+                    'Jupiter',
+                    'Saturn',
+                    'Uranus',
+                    'Neptune',
+                    'Pluto',
+                    'Sky',
+                    'Moon',
+                    'Sun',
+                    'Heaven'
+                ];
+
+                $totalGroups = Group::where('portal_set_id', $portalSet->id)
+                    ->where('group_number', '>=', 6) // exclude reserved 1–5
+                    ->count();
+                $nameIndex = $totalGroups % count($names);
+
+                $cycle = intdiv($totalGroups, count($names));
+
+                $baseName = $names[$nameIndex];
+                $groupName = $cycle > 0 ? $baseName . $cycle : $baseName;
+
+                $inviteLink = Str::uuid()->toString();
 
 
-            $group = Group::create([
-                'portal_set_id' => $portalSet->id,
-                'target_amount' => $portalSet->target_amount,
-                'name' => $groupName,
-                'group_number' => 52,
-                'leader_id' => $user->id,
-                'current_amount' => 0,
-                'project_name' => $request->project_name ?? $groupName,
-                'project_description' => $request->project_description ?? "Auto-generated group",
-                'logo_path' => $logoPath,
-                'video_path' => $videoPath,
-                'invite_link' => $inviteLink,
-                'is_active' => true
-            ]);
-              $this->createNotification(
+                $group = Group::create([
+                    'portal_set_id' => $portalSet->id,
+                    'target_amount' => $portalSet->target_amount,
+                    'name' => $groupName,
+                    'group_number' => 52,
+                    'leader_id' => $user->id,
+                    'current_amount' => 0,
+                    'project_name' => $request->project_name ?? $groupName,
+                    'project_description' => $request->project_description ?? "Auto-generated group",
+                    'logo_path' => $logoPath,
+                    'video_path' => $videoPath,
+                    'invite_link' => $inviteLink,
+                    'is_active' => true
+                ]);
+            
+            }
+
+
+            $this->createNotification(
                 $request->name . " registered successfully",
                 $user->id,
                 auth()->user()->id
             );
-
+            $checkGroupCount = Group::where('portal_set_id', $portalSet->id)->count();
+            if ($checkGroupCount == 52) {
+                $portalSet->is_active = 0;
+                $portalSet->save();
+            }
             DB::commit();
+
+            
             return redirect()->route('leader.index')->with('success', 'Add Leader successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -187,11 +223,37 @@ class LeaderController extends Controller
      */
     public function destroy(string $id)
     {
+    
         $user = User::findOrFail($id);
+        $group = Group::where('leader_id' , $id)->first();
+        $contribution = Contribution::where('group_id', $group->id)->first();
+
+        // checking is user made any contribution than don't delete it
+      
+        if($contribution){
+            return redirect()->route('leader.index')->with('success', "Can't delete leader cause maded contribution Once.");
+        }
+        if(in_array($group->id, [1,2,3,4,5]) || in_array($group->group_number,[1,2,3,4,5])){
+            $group->leader_id = 0;
+            $group->invite_link = null;
+            $group->save();
+            $this->createNotification(
+                $user->name . " deleted successfully",
+                $user->id,
+                auth()->user()->id
+            );  
+            $user->delete();
+            
+            return redirect()->route('leader.index')->with('success', "Leader Deleaded Create New for Reserved Group.");
+        }
+
+        $group->delete();
         $user->delete();
-        return redirect()->route('leader.index')->with('success', 'Deleted    Leader successfully');
+        return redirect()->route('leader.index')->with('success', "Deleted Leader & it's Group successfully");
 
     }
+
+
     public function toggleStatus(Request $request)
     {
         $user = User::where('role', 2)->find($request->id);

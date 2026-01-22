@@ -5,9 +5,7 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
 .env.backup
-.env.production
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -16,4 +14,13 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
-/.vscode
+/vendor
+/node_modules
+/storage/*.key
+/public/uploads
+/public/images.zip
+/public/images-0ld
+/vendor-new
+.git.zip
+error_log
+config.bat

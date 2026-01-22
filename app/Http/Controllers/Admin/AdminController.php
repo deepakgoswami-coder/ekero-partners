@@ -12,6 +12,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Str;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class AdminController extends Controller
 {
@@ -20,7 +22,9 @@ class AdminController extends Controller
      */
     public function index()
     {
-        $groups = Group::with('leader')->latest()->paginate(10);
+       $portalSet = PortalSet::where('isFull', 0)->first();
+
+        $groups = Group::with('leader')->where('portal_set_id',$portalSet->id)->latest()->paginate(10);
         return view("admin.groups.index", compact("groups"));
     }
 
@@ -94,6 +98,7 @@ class AdminController extends Controller
      */
     public function edit(string $id)
     {
+        $groups = Group::find($id);
         $leader = User::where('role', 2)->where('status', 1)->latest()->get();
         $portalSets = PortalSet::where('is_active', 1)->latest()->get();
         return view('admin.groups.edit', compact('groups', 'leader', 'portalSets'));
@@ -114,12 +119,26 @@ class AdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        Group::destroy($id);
-        return redirect()->route('groups.index')->with('success', 'Deleted group successfully');
-
+  public function destroy(string $id)
+{
+    $grp = Group::where('id',$id)->first();
+    if($grp->leader_id != 0){
+        return redirect()->route('groups.index')
+                         ->with('error', 'To Delete The Group Delete The Leader First');
     }
+    $deleted = Group::whereNotIn('group_number', [1,2,3,4,5])
+                    ->where('id', $id)
+                    ->delete();
+                
+    if ($deleted) {
+        return redirect()->route('groups.index')
+                         ->with('success', 'Group deleted successfully');
+    } else {
+        return redirect()->route('groups.index')
+                         ->with('error', 'You cannot delete this default group');
+    }
+}
+
     public function assignMember($id)
     {
         $group = Group::findOrFail($id);
@@ -165,5 +184,45 @@ class AdminController extends Controller
         }
         return redirect()->back()->with('success', 'Assign member successfully');
 
+    }
+     public function checkout()
+    {
+        return view('test');
+    }
+
+    public function session(Request $request)
+    {
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [
+                [
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'Sample Product',
+                        ],
+                        'unit_amount' => 2000, // $20.00
+                    ],
+                    'quantity' => 1,
+                ]
+            ],
+            'mode' => 'payment',
+            'success_url' => route('admin.stripe.success'),
+            'cancel_url' => route('admin.stripe.cancel'),
+        ]);
+
+        return redirect($session->url);
+    }
+
+    public function success()
+    {
+        return 'Payment Successful!';
+    }
+
+    public function cancel()
+    {
+        return 'Payment Cancelled!';
     }
 }
